@@ -9,24 +9,40 @@ use Illuminate\Http\Request;
 class HomeController extends Controller
 {
     /**
-     * نمایش صفحه اصلی سایت.
+     * Display the homepage with all necessary data for the new professional design.
      */
     public function index()
     {
-        // دریافت دسته‌بندی‌ها برای نوار ناوبری
-        $categories = Category::where('is_active', true)->get();
-
-        // دریافت ۱۲ دستور غذای جدید و تایید شده برای نمایش در صفحه اصلی
-        $latestRecipes = Recipe::with('user')
-            ->where('is_active', true)
-            ->latest() // مرتب‌سازی بر اساس جدیدترین
-            ->take(12) // فقط ۱۲ تای اول
+        // دریافت تمام دسته‌بندی‌های فعال به همراه تعداد دستورهای داخلشان
+        $categories = Category::where('is_active', true)
+            ->withCount(['recipes' => function ($query) {
+                $query->where('is_active', true);
+            }])
             ->get();
 
-        // ارسال داده‌ها به View
+        // دریافت ۸ دستور غذای جدید به همراه اطلاعات کاربر و امتیازات
+        $latestRecipes = Recipe::with('user')
+            ->where('is_active', true)
+            ->withAvg('ratings', 'rating')
+            ->withCount('ratings')
+            ->latest()
+            ->take(8)
+            ->get();
+
+        // دریافت ۸ دستور پرطرفدار (با بالاترین امتیاز) به همراه اطلاعات کاربر و امتیازات
+        $popularRecipes = Recipe::with('user')
+            ->where('is_active', true)
+            ->withAvg('ratings', 'rating')
+            ->withCount('ratings')
+            ->orderByDesc('ratings_avg_rating')
+            ->take(8)
+            ->get();
+
+        // ارسال تمام داده‌ها به View
         return view('welcome', [
             'categories' => $categories,
             'latestRecipes' => $latestRecipes,
+            'popularRecipes' => $popularRecipes,
         ]);
     }
 }

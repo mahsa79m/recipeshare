@@ -5,12 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Recipe;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class RecipeController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
-     * این متد برای پشتیبانی از جستجو و صفحه‌بندی به‌روز شده است.
      */
     public function index(Request $request)
     {
@@ -26,13 +30,12 @@ class RecipeController extends Controller
         }
 
         $recipes = $query->where('is_active', true)
-                         ->with('user', 'category')
-                         ->latest()
-                         ->paginate(12);
+                ->with('user', 'category')
+                ->latest()
+                ->paginate(12);
 
         return view('recipes.index', [
             'recipes' => $recipes,
-            'searchTerm' => $request->search ?? null
         ]);
     }
 
@@ -41,6 +44,7 @@ class RecipeController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Recipe::class);
         $categories = Category::all();
         return view('recipes.create', ['categories' => $categories]);
     }
@@ -50,6 +54,8 @@ class RecipeController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Recipe::class);
+
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
@@ -63,33 +69,29 @@ class RecipeController extends Controller
             $validatedData['image_path'] = $path;
         }
 
-        $validatedData['user_id'] = auth()->id();
-        // دستورهای جدید به صورت پیش‌فرض غیرفعال هستند
-        $validatedData['is_active'] = true; 
+        $validatedData['user_id'] = Auth::id();
+        $validatedData['is_active'] = false; // دستورهای جدید منتظر تایید مدیر هستند
 
         Recipe::create($validatedData);
 
-        return redirect()->route('dashboard')->with('success', 'دستور غذای شما با موفقیت ثبت شد و منتظر تایید مدیر است.');
+        return redirect()->route('recipes.index')->with('success', 'دستور غذای شما با موفقیت ثبت شد و منتظر تایید مدیر است.');
     }
 
     /**
      * Display the specified resource.
-     * [اصلاح شده] از Route Model Binding استفاده می‌کند
      */
+
     public function show(Recipe $recipe)
     {
-        // اطمینان از اینکه فقط دستورهای فعال قابل مشاهده هستند (مگر اینکه کاربر ادمین باشد)
-        if (!$recipe->is_active && (!auth()->check() || auth()->user()->role !== 'admin')) {
-            abort(404);
-        }
+        $this->authorize('view', $recipe);
 
-        $recipe->load('comments.user');
+        // به این خط، متد loadAvg اضافه شده است
+        $recipe->load('comments.user')->loadAvg('ratings', 'rating');
+
         return view('recipes.show', ['recipe' => $recipe]);
     }
-
     /**
      * Show the form for editing the specified resource.
-     * [اصلاح شده] از Route Model Binding استفاده می‌کند
      */
     public function edit(Recipe $recipe)
     {
@@ -104,7 +106,6 @@ class RecipeController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * [اصلاح شده] از Route Model Binding استفاده می‌کند
      */
     public function update(Request $request, Recipe $recipe)
     {
@@ -119,9 +120,20 @@ class RecipeController extends Controller
         ]);
 
         if ($request->hasFile('image_path')) {
-            // کد حذف عکس قدیمی باید اینجا اضافه شود
+            if ($recipe->image_path && Storage::disk('public')->exists($recipe->image_path)) {
+                Storage::disk('public')->delete($recipe->image_path);
+            }
             $path = $request->file('image_path')->store('recipes', 'public');
             $validatedData['image_path'] = $path;
+        }
+
+        // *** تغییر اصلی در این بخش است ***
+        // فقط ادمین اجازه دارد وضعیت is_active را تغییر دهد
+        if (Auth::user()->is_admin) { // استفاده از Accessor
+            // این بخش کد معمولا در پنل مدیریت استفاده می‌شود، اما برای کامل بودن اینجا هم قرار می‌دهیم
+            if (isset($request->is_active)) {
+                $validatedData['is_active'] = (bool)$request->is_active;
+            }
         }
 
         $recipe->update($validatedData);
@@ -131,13 +143,15 @@ class RecipeController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * [اصلاح شده] از Route Model Binding استفاده می‌کند
      */
     public function destroy(Recipe $recipe)
     {
         $this->authorize('delete', $recipe);
 
-        // کد حذف فایل عکس از storage باید اینجا اضافه شود
+        if ($recipe->image_path && Storage::disk('public')->exists($recipe->image_path)) {
+            Storage::disk('public')->delete($recipe->image_path);
+        }
+
         $recipe->delete();
 
         return redirect()->route('recipes.index')->with('success', 'دستور غذا با موفقیت حذف شد.');

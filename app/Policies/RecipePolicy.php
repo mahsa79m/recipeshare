@@ -13,15 +13,25 @@ class RecipePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Recipe $recipe): bool
+    public function view(?User $user, Recipe $recipe): Response
     {
-        return false;
+        // اگر دستور غذا فعال باشد، همه (حتی مهمانان) می‌توانند ببینند
+        if ($recipe->is_active) {
+            return Response::allow();
+        }
+
+        // اگر دستور فعال نیست، فقط صاحب دستور یا ادمین می‌تواند ببیند
+        if ($user && ($user->id === $recipe->user_id || $user->is_admin)) {
+            return Response::allow();
+        }
+
+        return Response::deny('شما اجازه مشاهده این دستور غذای غیرفعال را ندارید.');
     }
 
     /**
@@ -29,7 +39,8 @@ class RecipePolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        // هر کاربر لاگین کرده‌ای می‌تواند دستور غذا ایجاد کند
+        return $user !== null;
     }
 
     /**
@@ -37,8 +48,8 @@ class RecipePolicy
      */
     public function update(User $user, Recipe $recipe): bool
     {
-       // فقط کاربری که دستور غذا را ساخته، می‌تواند آن را ویرایش کند
-        return $user->id === $recipe->user_id;
+        // فقط صاحب دستور غذا یا ادمین می‌تواند آن را ویرایش کند
+       return $user->id === $recipe->user_id || $user->is_admin;
     }
 
     /**
@@ -46,8 +57,8 @@ class RecipePolicy
      */
     public function delete(User $user, Recipe $recipe): bool
     {
-       // فقط کاربری که دستور غذا را ساخته، می‌تواند آن را حذف کند
-        return $user->id === $recipe->user_id;
+        // فقط صاحب دستور غذا یا ادمین می‌تواند آن را حذف کند
+       return $user->id === $recipe->user_id || $user->is_admin;
     }
 
     /**
@@ -55,7 +66,8 @@ class RecipePolicy
      */
     public function restore(User $user, Recipe $recipe): bool
     {
-        return false;
+        // فقط ادمین می‌تواند بازیابی کند
+        return $user->is_admin;
     }
 
     /**
@@ -63,6 +75,7 @@ class RecipePolicy
      */
     public function forceDelete(User $user, Recipe $recipe): bool
     {
-        return false;
+        // فقط ادمین می‌تواند برای همیشه حذف کند
+        return $user->is_admin;
     }
 }
