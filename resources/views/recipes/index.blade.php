@@ -9,21 +9,18 @@
                     دستورهای غذایی
                 @endif
             </h2>
-            
-            <a href="{{ route('recipes.create') }}" class="px-5 py-2 bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600">
-                + ایجاد دستور جدید
-            </a>
+
         </div>
     </x-slot>
 
     <div dir="rtl" class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
+
             {{-- نمایش مجدد فرم جستجو --}}
             <div class="mb-8">
                 <form action="{{ route('recipes.index') }}" method="GET">
-                    <input type="text" name="search" placeholder="جستجوی دوباره..." 
-                           value="{{ request('search') }}" 
+                    <input type="text" name="search" placeholder="جستجوی دوباره..."
+                           value="{{ request('search') }}"
                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500">
                 </form>
             </div>
@@ -36,10 +33,9 @@
                             <img src="{{ $recipe->image_path ? asset('storage/' . $recipe->image_path) : 'https://placehold.co/400x300/F5F5F5/333333?text=No+Image' }}" alt="{{ $recipe->title }}" class="w-full h-48 object-cover">
                             <div class="p-4">
                                 <h3 class="font-bold text-lg mb-2 truncate">{{ $recipe->title }}</h3>
-                                {{-- این بخش به طور کامل تغییر کرده است --}}
                                 <p class="text-sm text-gray-600">
                                     توسط:
-                                    <a href="{{ route('users.show', $recipe->user) }}" class="font-medium text-brand-orange hover:underline">
+                                    <a href="{{ route('users.show', $recipe->user) }}" class="font-medium text-amber-600 hover:underline">
                                         {{ $recipe->user->name }}
                                     </a>
                                 </p>
@@ -57,11 +53,11 @@
                         <p class="text-lg text-gray-500">
                             متاسفانه هیچ نتیجه‌ای یافت نشد.
                         </p>
-                        <a href="{{ route('recipes.index') }}" class="mt-4 inline-block text-brand-orange hover:underline">بازگشت به لیست کامل دستورها</a>
+                        <a href="{{ route('recipes.index') }}" class="mt-4 inline-block text-amber-600 hover:underline">بازگشت به لیست کامل دستورها</a>
                     </div>
                 @endforelse
             </div>
-            
+
             {{-- لینک‌های صفحه‌بندی --}}
             <div class="mt-8">
                 {{ $recipes->links() }}

@@ -11,7 +11,7 @@ class UserProfileController extends Controller
     /**
      * نمایش صفحه پروفایل عمومی یک کاربر.
      */
-    public function show(User $user, Request $request) // <-- Request را به متد اضافه کردیم
+    public function show(User $user, Request $request)
     {
         // دستورهای غذایی تایید شده این کاربر را به همراه صفحه‌بندی بارگذاری می‌کنیم
         $recipes = $user->recipes()
@@ -25,7 +25,7 @@ class UserProfileController extends Controller
 
         // بررسی اینکه آیا کاربر لاگین کرده، این پروفایل را دنبال می‌کند یا خیر
         $isFollowing = false;
-        if ($request->user()) { // <-- بررسی می‌کنیم که آیا کاربری لاگین کرده است
+        if ($request->user()) {
             /** @var \App\Models\User $currentUser */
             $currentUser = $request->user();
             $isFollowing = $currentUser->isFollowing($user);
@@ -38,6 +38,36 @@ class UserProfileController extends Controller
             'followersCount' => $followersCount,
             'followingsCount' => $followingsCount,
             'isFollowing' => $isFollowing,
+        ]);
+    }
+
+    /**
+     * نمایش لیست دنبال‌کنندگان یک کاربر.
+     */
+    public function showFollowers(User $user)
+    {
+        $followers = $user->followers()->paginate(20);
+        $title = 'دنبال‌کنندگان ' . $user->name;
+
+        return view('users.follow_list', [
+            'users' => $followers,
+            'title' => $title,
+            'mainUser' => $user
+        ]);
+    }
+
+    /**
+     * نمایش لیست افرادی که یک کاربر دنبال می‌کند.
+     */
+    public function showFollowings(User $user)
+    {
+        $followings = $user->followings()->paginate(20);
+        $title = 'دنبال‌شوندگان ' . $user->name;
+
+        return view('users.follow_list', [
+            'users' => $followings,
+            'title' => $title,
+            'mainUser' => $user
         ]);
     }
 }

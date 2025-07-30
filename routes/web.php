@@ -13,9 +13,11 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\RecipeManagementController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\CategoryManagementController;
-use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\HubController;
 use App\Http\Controllers\Admin\CommentManagementController;
+use App\Http\Controllers\StaticPageController;
+
+use App\Http\Middleware\AdminMiddleware;
 /*
 |--------------------------------------------------------------------------
 | مسیرهای عمومی
@@ -26,13 +28,22 @@ Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index'
 Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
 Route::get('/users/{user}', [UserProfileController::class, 'show'])->name('users.show');
 
+//
+Route::get('/users/{user}/followers', [App\Http\Controllers\UserProfileController::class, 'showFollowers'])->name('users.followers');
+Route::get('/users/{user}/followings', [App\Http\Controllers\UserProfileController::class, 'showFollowings'])->name('users.followings');
+//
+Route::get('/about-us', [App\Http\Controllers\StaticPageController::class, 'about'])->name('pages.about');
+Route::get('/contact-us', [App\Http\Controllers\StaticPageController::class, 'contact'])->name('pages.contact');
+Route::get('/faq', [App\Http\Controllers\StaticPageController::class, 'faq'])->name('pages.faq');
+//
+
 /*
 |--------------------------------------------------------------------------
 | مسیرهای نیازمند احراز هویت
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
-    // مسیرهای جدید هاب کاربری
+    // مسیرهای جدید پنل کاربری
     Route::get('/dashboard', [HubController::class, 'showMyProfile'])->name('dashboard');
     Route::get('/my-recipes', [HubController::class, 'showMyRecipes'])->name('my-recipes');
 

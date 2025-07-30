@@ -123,13 +123,13 @@
                                             <img src="{{ $recipe->user->profile_image_path ? asset('storage/' . $recipe->user->profile_image_path) : 'https://ui-avatars.com/api/?name='.urlencode($recipe->user->name) }}" alt="{{ $recipe->user->name }}" class="w-6 h-6 rounded-full ml-2 object-cover">
                                             <span>{{ $recipe->user->name }}</span>
                                         </div>
-                                        <span class="text-xs">{{ verta($recipe->created_at)->formatDifference() }}</span>
+                                        <x-star-rating :rating="$recipe->ratings_avg_rating" />
                                     </div>
                                 </div>
                             </a>
                         </div>
                     @empty
-                         <p class="col-span-full text-center text-slate-500">هنوز دستوری برای نمایش وجود ندارد.</p>
+                        <p class="col-span-full text-center text-slate-500">هنوز دستوری برای نمایش وجود ندارد.</p>
                     @endforelse
                 </div>
             </section>
@@ -138,6 +138,7 @@
             <section class="bg-white p-4 rounded-2xl shadow-lg">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-gray-800">پرطرفدارترین دستورها</h2>
+
                     <a href="{{ route('recipes.index') }}" class="text-sm font-semibold text-amber-600 hover:underline">مشاهده همه</a>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

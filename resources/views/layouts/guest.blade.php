@@ -10,7 +10,8 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
+
+        <link href="https://fonts.googleapis.com/css2?family=Sahel:wght@400;700&display=swap" rel="stylesheet">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -18,7 +19,7 @@
         <!-- Styles -->
         <style>
             body {
-                font-family: 'Vazirmatn', sans-serif;
+                font-family: 'Sahel', sans-serif;
             }
         </style>
     </head>

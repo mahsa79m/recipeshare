@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Recipe;
+use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class RecipeController extends Controller
 {
@@ -49,9 +50,29 @@ class RecipeController extends Controller
         return view('recipes.create', ['categories' => $categories]);
     }
 
+
+    public function show(Recipe $recipe)
+    {
+        $this->authorize('view', $recipe);
+
+        $recipe->load('comments.user');
+
+        $averageRating = $recipe->ratings()->avg('rating');
+        $ratingsCount = $recipe->ratings()->count();
+
+        // متغیر isFollowing به طور کامل از این متد حذف شد
+
+        return view('recipes.show', [
+            'recipe' => $recipe,
+            'averageRating' => $averageRating,
+            'ratingsCount' => $ratingsCount,
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     {
         $this->authorize('create', Recipe::class);
@@ -59,9 +80,12 @@ class RecipeController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'ingredients' => 'required|string',
-            'description' => 'required|string',
-            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+           'description' => 'required|string',
+           'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'ingredients' => 'required|array', // اطمینان از اینکه مواد لازم به صورت آرایه ارسال شده
+            'ingredients.*.quantity' => 'nullable|string|max:50',
+            'ingredients.*.unit' => 'required|string|max:50',
+            'ingredients.*.name' => 'required|string|max:255',
         ]);
 
         if ($request->hasFile('image_path')) {
@@ -70,26 +94,17 @@ class RecipeController extends Controller
         }
 
         $validatedData['user_id'] = Auth::id();
-        $validatedData['is_active'] = false; // دستورهای جدید منتظر تایید مدیر هستند
+        $validatedData['is_active'] = false;
+
+         // *** تغییر اصلی در این بخش است ***
+        // ما آرایه مواد لازم را به یک رشته JSON تبدیل می‌کنیم
+        $validatedData['ingredients'] = json_encode($request->ingredients);
 
         Recipe::create($validatedData);
 
         return redirect()->route('recipes.index')->with('success', 'دستور غذای شما با موفقیت ثبت شد و منتظر تایید مدیر است.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-
-    public function show(Recipe $recipe)
-    {
-        $this->authorize('view', $recipe);
-
-        // به این خط، متد loadAvg اضافه شده است
-        $recipe->load('comments.user')->loadAvg('ratings', 'rating');
-
-        return view('recipes.show', ['recipe' => $recipe]);
-    }
     /**
      * Show the form for editing the specified resource.
      */
@@ -127,10 +142,7 @@ class RecipeController extends Controller
             $validatedData['image_path'] = $path;
         }
 
-        // *** تغییر اصلی در این بخش است ***
-        // فقط ادمین اجازه دارد وضعیت is_active را تغییر دهد
-        if (Auth::user()->is_admin) { // استفاده از Accessor
-            // این بخش کد معمولا در پنل مدیریت استفاده می‌شود، اما برای کامل بودن اینجا هم قرار می‌دهیم
+        if (Auth::user()->is_admin) {
             if (isset($request->is_active)) {
                 $validatedData['is_active'] = (bool)$request->is_active;
             }
@@ -156,4 +168,5 @@ class RecipeController extends Controller
 
         return redirect()->route('recipes.index')->with('success', 'دستور غذا با موفقیت حذف شد.');
     }
+
 }
