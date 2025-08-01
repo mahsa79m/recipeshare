@@ -4,27 +4,36 @@
     {{-- کارت‌های آمار کلی --}}
     <div class="mt-4">
         <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-3">
-            {{-- Card for Total Users --}}
-            <div class="flex items-center p-4 bg-white rounded-lg shadow-md">
+            {{-- Card for Total Users (Clickable) --}}
+            <a href="{{ route('admin.users.index') }}" class="flex items-center p-4 bg-white rounded-lg shadow-md transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+                <div class="p-3 mr-4 text-green-500 bg-green-100 rounded-full">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.125-1.274-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.125-1.274.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                </div>
                 <div>
                     <p class="mb-2 text-sm font-medium text-gray-600">تعداد کل کاربران</p>
                     <p class="text-3xl font-bold text-gray-700">{{ $totalUsers }}</p>
                 </div>
-            </div>
-            {{-- Card for Published Recipes --}}
-            <div class="flex items-center p-4 bg-white rounded-lg shadow-md">
+            </a>
+            {{-- Card for Published Recipes (Clickable) --}}
+            <a href="{{ route('admin.recipes.index', ['status' => 'published']) }}" class="flex items-center p-4 bg-white rounded-lg shadow-md transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+                <div class="p-3 mr-4 text-blue-500 bg-blue-100 rounded-full">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+                </div>
                 <div>
                     <p class="mb-2 text-sm font-medium text-gray-600">دستورهای منتشر شده</p>
                     <p class="text-3xl font-bold text-gray-700">{{ $totalRecipes }}</p>
                 </div>
-            </div>
-            {{-- Card for Pending Recipes --}}
-            <div class="flex items-center p-4 bg-white rounded-lg shadow-md">
+            </a>
+            {{-- Card for Pending Recipes (Clickable) --}}
+            <a href="{{ route('admin.recipes.index', ['status' => 'pending']) }}" class="flex items-center p-4 bg-white rounded-lg shadow-md transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+                <div class="p-3 mr-4 text-amber-500 bg-amber-100 rounded-full">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
                 <div>
                     <p class="mb-2 text-sm font-medium text-gray-600">در انتظار تایید</p>
                     <p class="text-3xl font-bold text-amber-500">{{ $pendingRecipes }}</p>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 
@@ -35,7 +44,9 @@
             <canvas id="userGrowthChart"></canvas>
         </div>
         <div class="p-6 bg-white rounded-lg shadow">
-            <h4 class="text-xl font-semibold text-gray-700 mb-4">محبوب‌ترین دستورها (بر اساس امتیاز)</h4>
+            <div class="flex justify-between items-center mb-4">
+                <h4 class="text-xl font-semibold text-gray-700">محبوب‌ترین دستورها</h4>
+            </div>
             <div class="space-y-4">
                 @forelse ($popularRecipes as $recipe)
                     <div class="flex items-center justify-between">
@@ -61,7 +72,9 @@
     <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- ستون فعال‌ترین کاربران -->
         <div class="p-6 bg-white rounded-lg shadow">
-            <h4 class="text-xl font-semibold text-gray-700 mb-4">فعال‌ترین کاربران</h4>
+            <div class="flex justify-between items-center mb-4">
+                <h4 class="text-xl font-semibold text-gray-700">فعال‌ترین کاربران</h4>
+            </div>
             <div class="space-y-4">
                 @forelse ($activeUsers as $user)
                     <div class="flex items-center justify-between">
@@ -78,7 +91,10 @@
 
         <!-- ستون جدیدترین کاربران -->
         <div class="p-6 bg-white rounded-lg shadow">
-            <h4 class="text-xl font-semibold text-gray-700 mb-4">آخرین ثبت‌نام‌ها</h4>
+            <div class="flex justify-between items-center mb-4">
+                <h4 class="text-xl font-semibold text-gray-700">آخرین ثبت‌نام‌ها</h4>
+                <a href="{{ route('admin.users.index') }}" class="text-sm font-semibold text-amber-600 hover:underline">مشاهده همه</a>
+            </div>
             <div class="space-y-4">
                 @forelse ($latestUsers as $user)
                     <div class="flex items-center justify-between">
@@ -95,7 +111,10 @@
 
         <!-- ستون محبوب‌ترین دسته‌بندی‌ها -->
         <div class="p-6 bg-white rounded-lg shadow">
-            <h4 class="text-xl font-semibold text-gray-700 mb-4">محبوب‌ترین دسته‌بندی‌ها</h4>
+            <div class="flex justify-between items-center mb-4">
+                <h4 class="text-xl font-semibold text-gray-700">محبوب‌ترین دسته‌بندی‌ها</h4>
+                <a href="{{ route('admin.categories.index') }}" class="text-sm font-semibold text-amber-600 hover:underline">مشاهده همه</a>
+            </div>
             <div class="space-y-4">
                 @forelse ($popularCategories as $category)
                     <div class="flex items-center justify-between">
@@ -114,31 +133,37 @@
     {{-- فراخوانی کتابخانه و اسکریپت نمودار --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const ctx = document.getElementById('userGrowthChart');
-        const chartLabels = {!! $chartLabels->toJson() !!};
-        const chartData = {!! $chartData->toJson() !!};
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('userGrowthChart');
+            if (ctx) {
+                const chartLabels = @json($chartLabels);
+                const chartData = @json($chartData);
 
-        if (chartLabels.length > 0) {
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: chartLabels,
-                    datasets: [{
-                        label: 'کاربران جدید',
-                        data: chartData,
-                        backgroundColor: 'rgba(251, 146, 60, 0.2)',
-                        borderColor: 'rgba(251, 146, 60, 1)',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: true,
-                    }]
-                },
-                options: {
-                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1, callback: function(value) {if (value % 1 === 0) {return value;}} } } },
-                    responsive: true,
-                    plugins: { legend: { position: 'top' } }
+                if (chartLabels.length > 0) {
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: chartLabels,
+                            datasets: [{
+                                label: 'کاربران جدید',
+                                data: chartData,
+                                backgroundColor: 'rgba(251, 146, 60, 0.2)',
+                                borderColor: 'rgba(251, 146, 60, 1)',
+                                borderWidth: 2,
+                                tension: 0.4,
+                                fill: true,
+                            }]
+                        },
+                        options: {
+                            scales: { y: { beginAtZero: true, ticks: { stepSize: 1, callback: function(value) {if (value % 1 === 0) {return value;}} } } },
+                            responsive: true,
+                            plugins: { legend: { position: 'top' } }
+                        }
+                    });
+                } else {
+                    ctx.parentElement.innerHTML = '<p class="text-center text-gray-500 py-8">داده‌ای برای نمایش نمودار وجود ندارد.</p>';
                 }
-            });
-        }
+            }
+        });
     </script>
 </x-admin-layout>

@@ -27,7 +27,11 @@
                 <tbody class="divide-y divide-gray-200">
                     @forelse ($categories as $category)
                         <tr class="text-sm text-gray-700">
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $category->name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a href="{{ route('categories.show', $category) }}" class="font-semibold text-gray-800 hover:text-amber-600 hover:underline">
+                                    {{ $category->name }}
+                                </a>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $category->slug }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $category->recipes()->count() }}</td>
                             <td class="px-6 py-4 whitespace-nowrap flex space-x-2 space-x-reverse">

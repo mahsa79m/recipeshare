@@ -12,7 +12,7 @@
             <table class="min-w-full">
                 <thead>
                     <tr class="text-right text-xs font-medium tracking-wider text-gray-500 uppercase border-b">
-                        <th class="px-6 py-3">نام</th>
+                        <th class="px-6 py-3">کاربر</th>
                         <th class="px-6 py-3">ایمیل</th>
                         <th class="px-6 py-3">تاریخ عضویت</th>
                         <th class="px-6 py-3">وضعیت</th>
@@ -22,7 +22,18 @@
                 <tbody class="divide-y divide-gray-200">
                     @foreach ($users as $user)
                         <tr class="text-sm text-gray-700">
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $user->name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a href="{{ route('users.show', $user) }}" class="flex items-center hover:text-amber-600 hover:underline">
+                                    <div class="flex-shrink-0 w-10 h-10">
+                                        <img class="w-10 h-10 rounded-full object-cover"
+                                             src="{{ $user->profile_image_path ? asset('storage/' . $user->profile_image_path) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) }}"
+                                             alt="{{ $user->name }}">
+                                    </div>
+                                    <div class="mr-4">
+                                        <div class="font-medium text-gray-900">{{ $user->name }}</div>
+                                    </div>
+                                </a>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $user->email }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ verta($user->created_at)->format('Y/m/d') }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">

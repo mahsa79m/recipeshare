@@ -73,9 +73,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', AdminMiddleware::cla
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
     Route::patch('/users/{user}/toggle-status', [UserManagementController::class, 'toggleStatus'])->name('users.toggleStatus');
+
     Route::get('/recipes', [RecipeManagementController::class, 'index'])->name('recipes.index');
     Route::patch('/recipes/{recipe}/approve', [RecipeManagementController::class, 'approve'])->name('recipes.approve');
     Route::patch('/recipes/{recipe}/reject', [RecipeManagementController::class, 'reject'])->name('recipes.reject');
+    Route::delete('/recipes/{recipe}', [RecipeManagementController::class, 'destroy'])->name('recipes.destroy');
+
     Route::resource('categories', CategoryManagementController::class)->except(['show']);
 
     Route::get('/comments', [CommentManagementController::class, 'index'])->name('comments.index');

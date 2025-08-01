@@ -12,8 +12,6 @@ class Recipe extends Model
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
      */
     protected $fillable = [
         'user_id',
@@ -27,8 +25,6 @@ class Recipe extends Model
 
     /**
      * The attributes that should be cast.
-     *
-     * @var array<string, string>
      */
     protected $casts = [
         'is_active' => 'boolean',
@@ -38,33 +34,30 @@ class Recipe extends Model
     // Relationships
     // =================================================================
 
-    /**
-     * Get the user that owns the recipe.
-     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the category of the recipe.
-     */
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
     /**
-     * Get the comments for the recipe.
+     * Get only the top-level comments for the recipe.
+     * (فقط نظرات اصلی، بدون پاسخ‌ها)
      */
     public function comments()
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Comment::class)->whereNull('parent_id');
     }
 
-    /**
-     * Get the ratings for the recipe.
-     */
+    public function allComments()
+    {
+    return $this->hasMany(Comment::class);
+    }
+
     public function ratings()
     {
         return $this->hasMany(Rating::class);

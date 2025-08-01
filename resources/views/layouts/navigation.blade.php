@@ -8,7 +8,7 @@
                 @auth
                     <!-- منوی کشویی تنظیمات کاربر (فقط دسکتاپ) -->
                     <div class="hidden sm:flex sm:items-center">
-                        <x-dropdown align="left" width="48">
+                        <x-dropdown align="right" width="48">
                             <x-slot name="trigger">
                                 <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-900 focus:outline-none transition ease-in-out duration-150 shadow-sm">
                                     <div class="ml-1">{{ Auth::user()->name }}</div>
@@ -25,7 +25,7 @@
                                     <x-dropdown-link :href="route('admin.dashboard')">پنل مدیریت</x-dropdown-link>
                                 @endif
                                 <x-dropdown-link :href="route('dashboard')">پنل کاربری</x-dropdown-link>
-                                <x-dropdown-link :href="route('users.show', Auth::user())">مشاهده پروفایل عمومی</x-dropdown-link>
+                                <x-dropdown-link :href="route('users.show', Auth::user())">مشاهده  صفحه ی کاربر</x-dropdown-link>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
@@ -53,7 +53,7 @@
             </div>
 
             <!-- سمت چپ هدر -->
-            <div class="flex-1 flex justify-end">
+            <div class="flex-1 flex justify-end items-center">
                 <!-- دکمه افزودن دستور (فقط دسکتاپ) -->
                 @auth
                     @if (!request()->routeIs('recipes.create'))
@@ -65,6 +65,17 @@
                         </a>
                     @endif
                 @endauth
+
+                <!-- دکمه بازگشت (اصلاح شده) -->
+                @if(url()->previous() !== url()->current() && !request()->routeIs('home'))
+                    <button onclick="window.history.back();" class="hidden sm:inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition ease-in-out duration-150 shadow-sm mr-4">
+                        {{-- کلاس transform rotate-180 حذف شد تا فلش به چپ باشد --}}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        <span>بازگشت</span>
+                    </button>
+                @endif
             </div>
         </div>
     </div>

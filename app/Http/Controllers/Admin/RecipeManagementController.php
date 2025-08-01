@@ -9,52 +9,51 @@ use Illuminate\Support\Facades\Storage;
 
 class RecipeManagementController extends Controller
 {
-    /**
-     * Display a list of pending recipes for approval.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        // دریافت دستورهای غذایی که در انتظار تایید هستند (is_active = false)
-        // به همراه اطلاعات کاربر و دسته‌بندی برای نمایش در جدول
-        $pendingRecipes = Recipe::with('user', 'category')
-                                ->where('is_active', false)
-                                ->latest()
-                                ->paginate(15);
+        // START: FIX - Calculate pending count and pass it to the view
+        $pendingRecipesCount = Recipe::where('is_active', false)->count();
+        // END: FIX
 
-        return view('admin.recipes.index', ['recipes' => $pendingRecipes]);
+        $query = Recipe::with('user', 'category')->latest();
+
+        // Filtering based on status
+        if ($request->query('status') === 'pending') {
+            $query->where('is_active', false);
+        } elseif ($request->query('status') === 'published') {
+            $query->where('is_active', true);
+        }
+
+        $recipes = $query->paginate(15)->withQueryString();
+
+        return view('admin.recipes.index', [
+            'recipes' => $recipes,
+            'pendingRecipes' => $pendingRecipesCount // Pass the count to the view
+        ]);
     }
 
-    /**
-     * Approve a pending recipe.
-     * (تایید کردن یک دستور غذا)
-     */
     public function approve(Recipe $recipe)
     {
-        $recipe->is_active = true;
-        $recipe->save();
-
-        // می‌توانید در اینجا یک ایمیل یا نوتیفیکیشن برای کاربر ارسال کنید
-        // Mail::to($recipe->user)->send(new RecipeApproved($recipe));
-
+        $recipe->update(['is_active' => true]);
         return back()->with('success', 'دستور غذا با موفقیت تایید و منتشر شد.');
     }
 
-    /**
-     * Reject and delete a pending recipe.
-     * (رد کردن و حذف یک دستور غذا)
-     */
     public function reject(Recipe $recipe)
     {
-        // قبل از حذف رکورد از دیتابیس، تصویر مرتبط با آن را نیز از حافظه پاک می‌کنیم
         if ($recipe->image_path && Storage::disk('public')->exists($recipe->image_path)) {
             Storage::disk('public')->delete($recipe->image_path);
         }
-
         $recipe->delete();
-
-        // می‌توانید یک ایمیل یا نوتیفیکیشن برای کاربر ارسال کنید که چرا دستورش رد شده است
-        // Mail::to($recipe->user)->send(new RecipeRejected($recipe));
-
         return back()->with('success', 'دستور غذا با موفقیت رد و حذف شد.');
+    }
+
+    // New method to delete any recipe
+    public function destroy(Recipe $recipe)
+    {
+        if ($recipe->image_path && Storage::disk('public')->exists($recipe->image_path)) {
+            Storage::disk('public')->delete($recipe->image_path);
+        }
+        $recipe->delete();
+        return back()->with('success', 'دستور غذا با موفقیت حذف شد.');
     }
 }

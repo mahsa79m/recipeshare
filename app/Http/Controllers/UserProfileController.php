@@ -5,69 +5,42 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 
 class UserProfileController extends Controller
 {
     /**
-     * نمایش صفحه پروفایل عمومی یک کاربر.
+     * نمایش صفحه پروفایل عمومی یک کاربر به همراه تمام اطلاعات مورد نیاز.
      */
     public function show(User $user, Request $request)
     {
-        // دستورهای غذایی تایید شده این کاربر را به همراه صفحه‌بندی بارگذاری می‌کنیم
-        $recipes = $user->recipes()
-                        ->where('is_active', true)
-                        ->latest()
-                        ->paginate(12);
+        $recipes = $user->recipes()->where('is_active', true)->latest()->paginate(12, ['*'], 'recipes_page');
+        $followers = $user->followers()->paginate(21, ['*'], 'followers_page');
+        $followings = $user->followings()->paginate(21, ['*'], 'followings_page');
 
-        // شمارش تعداد دنبال‌کنندگان و دنبال‌شوندگان
-        $followersCount = $user->followers()->count();
-        $followingsCount = $user->followings()->count();
+        /** @var \App\Models\User|null $currentUser */
+        $currentUser = Auth::user();
 
-        // بررسی اینکه آیا کاربر لاگین کرده، این پروفایل را دنبال می‌کند یا خیر
-        $isFollowing = false;
-        if ($request->user()) {
-            /** @var \App\Models\User $currentUser */
-            $currentUser = $request->user();
-            $isFollowing = $currentUser->isFollowing($user);
+        // بهینه‌سازی: بررسی وضعیت دنبال کردن کاربران لیست‌ها با یک کوئری
+        $followingIdsOnPage = collect();
+        if ($currentUser) {
+            $allVisibleUserIds = $followers->pluck('id')->merge($followings->pluck('id'))->unique();
+            if ($allVisibleUserIds->isNotEmpty()) {
+                $followingIdsOnPage = $currentUser->followings()->whereIn('users.id', $allVisibleUserIds)->pluck('users.id');
+            }
         }
 
-        // ارسال تمام داده‌ها به View
+        $isFollowing = $currentUser ? $currentUser->isFollowing($user) : false;
+
         return view('users.show', [
             'user' => $user,
             'recipes' => $recipes,
-            'followersCount' => $followersCount,
-            'followingsCount' => $followingsCount,
+            'followers' => $followers,
+            'followings' => $followings,
+            'followersCount' => $followers->total(),
+            'followingsCount' => $followings->total(),
             'isFollowing' => $isFollowing,
-        ]);
-    }
-
-    /**
-     * نمایش لیست دنبال‌کنندگان یک کاربر.
-     */
-    public function showFollowers(User $user)
-    {
-        $followers = $user->followers()->paginate(20);
-        $title = 'دنبال‌کنندگان ' . $user->name;
-
-        return view('users.follow_list', [
-            'users' => $followers,
-            'title' => $title,
-            'mainUser' => $user
-        ]);
-    }
-
-    /**
-     * نمایش لیست افرادی که یک کاربر دنبال می‌کند.
-     */
-    public function showFollowings(User $user)
-    {
-        $followings = $user->followings()->paginate(20);
-        $title = 'دنبال‌شوندگان ' . $user->name;
-
-        return view('users.follow_list', [
-            'users' => $followings,
-            'title' => $title,
-            'mainUser' => $user
+            'followingIdsOnPage' => $followingIdsOnPage,
         ]);
     }
 }

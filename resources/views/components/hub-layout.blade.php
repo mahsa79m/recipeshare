@@ -11,17 +11,19 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         body { font-family: 'Vazirmatn', sans-serif; }
+        [x-cloak] { display: none !important; }
     </style>
 </head>
 <body class="font-sans antialiased bg-gray-100">
     <div x-data="{ sidebarOpen: false }" class="flex h-screen bg-gray-100">
         <!-- Overlay for mobile -->
-        <div x-show="sidebarOpen" class="fixed inset-0 z-20 bg-black bg-opacity-50 transition-opacity lg:hidden" @click="sidebarOpen = false"></div>
+        <div x-show="sidebarOpen" x-cloak class="fixed inset-0 z-20 bg-black bg-opacity-50 transition-opacity lg:hidden" @click="sidebarOpen = false"></div>
 
         <!-- Sidebar -->
         <aside
-            class="fixed inset-y-0 right-0 z-30 flex flex-col w-64 overflow-y-auto transition-transform duration-300 transform bg-white shadow-lg lg:static lg:translate-x-0"
-            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+            x-cloak
+            class="fixed inset-y-0 right-0 z-30 flex flex-col w-full max-w-xs sm:w-64 overflow-y-auto transition-transform duration-300 transform bg-white shadow-lg lg:static lg:translate-x-0"
+            :class="sidebarOpen ? 'translate-x-0' : 'translate-x-full'">
 
             <div class="flex items-center justify-center p-4 border-b h-20">
                 <a href="{{ route('home') }}" class="text-2xl font-bold text-amber-600 hover:text-amber-700 transition-colors">
@@ -30,6 +32,14 @@
             </div>
 
             <nav class="flex-1 px-2 py-4 space-y-2">
+                <!-- دکمه جدید: بازگشت به سایت -->
+                <a class="flex items-center px-4 py-2 text-gray-700 rounded-md transition-colors hover:bg-gray-100" href="{{ route('home') }}">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" /></svg>
+                    <span class="mx-3">بازگشت به سایت</span>
+                </a>
+
+                <hr class="my-2">
+
                 <a class="flex items-center px-4 py-2 text-gray-700 rounded-md transition-colors {{ request()->routeIs('dashboard') ? 'bg-amber-100 text-amber-700 font-bold' : 'hover:bg-gray-100' }}" href="{{ route('dashboard') }}">
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
                     <span class="mx-3">داشبورد</span>
@@ -39,7 +49,6 @@
                     <span class="mx-3">دستورهای من</span>
                 </a>
 
-                {{-- لینک‌های جدید و تفکیک شده --}}
                 <hr class="my-2">
                 <p class="px-4 pt-2 pb-1 text-xs font-semibold text-gray-400 uppercase">تنظیمات حساب</p>
 

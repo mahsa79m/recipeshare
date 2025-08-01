@@ -1,32 +1,74 @@
 <x-app-layout>
-    {{-- هدر پیش‌فرض خالی می‌ماند --}}
     <x-slot name="header"></x-slot>
 
-    <div class="bg-slate-50" dir="rtl">
+    <div class="bg-slate-50" dir="rtl"
+         x-data="{
+             openReplyForm: null,
+             successMessage: '',
+             isLoading: false,
+             avgRating: {{ (float)$averageRating ?? 0 }},
+             ratingsCount: {{ $ratingsCount ?? 0 }},
 
-        <!-- هدر ثابت با ارتفاع کمتر -->
-        <div class="sticky top-16 z-30 bg-white shadow-md">
-             <div class="container mx-auto max-w-4xl px-4 flex items-center h-16">
-                <h1 class="text-xl md:text-2xl font-bold text-gray-800 truncate">
-                    {{ $recipe->title }}
-                </h1>
-            </div>
+             submitForm(event, type) {
+                 event.preventDefault();
+                 this.isLoading = true;
+                 this.successMessage = '';
+                 let form = event.target;
+                 let formData = new FormData(form);
+
+                 fetch(form.action, {
+                     method: 'POST',
+                     headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+                     body: formData
+                 })
+                 .then(response => response.json())
+                 .then(data => {
+                     this.successMessage = data.message;
+                     if (type === 'rating') {
+                         this.avgRating = data.averageRating;
+                         this.ratingsCount = data.ratingsCount;
+                     } else {
+                         document.getElementById('comments-section').innerHTML = data.commentsHtml;
+                         form.reset();
+                         this.openReplyForm = null;
+                     }
+                     setTimeout(() => this.successMessage = '', 3000);
+                 })
+                 .catch(error => console.error('Error:', error))
+                 .finally(() => this.isLoading = false);
+             }
+         }">
+
+        <!-- اعلان Toast (منتقل شده به بالا) -->
+        <div
+            x-show="successMessage"
+            x-cloak
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 transform -translate-y-4"
+            x-transition:enter-end="opacity-100 transform translate-y-0"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100 transform translate-y-0"
+            x-transition:leave-end="opacity-0 transform -translate-y-4"
+            class="fixed top-20 left-1/2 -translate-x-1/2 px-6 py-3 bg-green-500 text-white rounded-full shadow-lg z-50"
+        >
+            <p x-text="successMessage"></p>
         </div>
 
-        {{-- محتوای اصلی صفحه --}}
         <div class="container mx-auto max-w-4xl py-12 px-4 space-y-8">
             <div class="bg-white p-6 rounded-2xl shadow-lg">
+                {{-- بخش بالایی صفحه (عنوان، عکس، نویسنده و ...) --}}
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-center">
+                    {{ $recipe->title }}
+                </h1>
 
-                <!-- تصویر مربعی و کوچک‌تر -->
                 @if ($recipe->image_path)
-                    <div class="max-w-md mx-auto mb-8">
+                    <div class="mb-8">
                         <div class="aspect-square w-full overflow-hidden rounded-2xl shadow-lg">
                             <img src="{{ asset('storage/' . $recipe->image_path) }}" alt="{{ $recipe->title }}" class="w-full h-full object-cover">
                         </div>
                     </div>
                 @endif
 
-                <!-- کارت نویسنده -->
                 <div class="p-4 border rounded-2xl mb-8">
                     <a href="{{ route('users.show', $recipe->user) }}" class="flex items-center">
                         <img class="h-16 w-16 rounded-full object-cover border-2 border-amber-500"
@@ -39,7 +81,6 @@
                     </a>
                 </div>
 
-                <!-- مواد لازم -->
                 <div class="mb-8">
                     <h3 class="text-2xl font-bold mb-4 text-gray-800 border-b-2 border-amber-500 pb-2">مواد لازم</h3>
                     @php
@@ -57,15 +98,10 @@
                     @endif
                 </div>
 
-                <!-- طرز تهیه -->
                 <div>
                     <h3 class="text-2xl font-bold mb-4 text-gray-800 border-b-2 border-amber-500 pb-2">طرز تهیه</h3>
-                    <div class="prose prose-lg max-w-none text-gray-700 leading-relaxed whitespace-pre-line">
-                        {{ $recipe->description }}
-                    </div>
+                    <div class="prose prose-lg max-w-none text-gray-700 leading-relaxed whitespace-pre-line">{{ $recipe->description }}</div>
                 </div>
-
-                <!-- دکمه‌های ویرایش و حذف -->
                 @can('update', $recipe)
                     <div class="flex items-center space-x-2 space-x-reverse border-t mt-8 pt-6">
                         <a href="{{ route('recipes.edit', $recipe) }}" class="px-4 py-2 text-sm font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600">ویرایش دستور</a>
@@ -81,19 +117,27 @@
             <!-- بخش نظرات و امتیازات -->
             <div class="bg-white p-6 rounded-2xl shadow-lg">
                 <h3 class="text-2xl font-bold mb-4 text-gray-800">امتیاز و نظرات</h3>
-                <div class="flex items-center mb-6">
-                    <x-star-rating :rating="$averageRating" class="text-3xl" />
-                    @if($ratingsCount > 0)
-                        <span class="text-base text-gray-600 mr-2">میانگین <b>{{ number_format($averageRating, 1) }}</b> از <b>{{ $ratingsCount }}</b> رأی</span>
-                    @else
-                        <span class="text-base text-gray-600 mr-2">هنوز امتیازی ثبت نشده</span>
-                    @endif
+
+                <!-- بخش امتیازات (داینامیک) -->
+                <div class="border rounded-lg p-4 mb-6">
+                    <div x-show="ratingsCount > 0" class="flex items-center justify-center">
+                        <div class="text-center">
+                            <p class="text-4xl font-bold text-gray-800" x-text="avgRating"></p>
+                            <div class="flex justify-center text-yellow-400 mt-1">
+                                <x-star-rating :rating="$averageRating" class="text-xl" />
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2">از <span x-text="ratingsCount"></span> رأی</p>
+                        </div>
+                    </div>
+                    <div x-show="ratingsCount == 0" x-cloak>
+                        <p class="text-center text-gray-500 py-4">هنوز امتیازی برای این دستور ثبت نشده است.</p>
+                    </div>
                 </div>
 
                 {{-- فرم‌های ثبت نظر و امتیاز --}}
                 @auth
                     <div class="border-t pt-6">
-                         <form action="{{ route('ratings.store', $recipe) }}" method="POST" class="mb-6">
+                        <form @submit.prevent="submitForm($event, 'rating')" action="{{ route('ratings.store', $recipe) }}" method="POST" class="mb-6">
                             @csrf
                             <h4 class="text-lg font-semibold mb-2">امتیاز شما</h4>
                             <div class="rating flex flex-row-reverse justify-end text-4xl">
@@ -104,20 +148,17 @@
                                 <input type="radio" id="star1" name="rating" value="1" class="hidden" /><label for="star1" class="cursor-pointer text-gray-300 transition-colors">★</label>
                             </div>
                             <style>
-                                .rating input:checked ~ label,
-                                .rating label:hover,
-                                .rating label:hover ~ label {
-                                    color: #facc15;
-                                }
+                                .rating input:checked ~ label, .rating label:hover, .rating label:hover ~ label { color: #facc15; }
                             </style>
-                            <button type="submit" class="px-4 py-2 mt-2 bg-amber-500 text-white text-sm font-semibold rounded-md hover:bg-amber-600">ثبت امتیاز</button>
+                            <button type="submit" :disabled="isLoading" class="px-4 py-2 mt-2 bg-amber-500 text-white text-sm font-semibold rounded-md hover:bg-amber-600 disabled:bg-amber-300">ثبت امتیاز</button>
                         </form>
-                        <form action="{{ route('comments.store', $recipe) }}" method="POST">
+
+                        <form @submit.prevent="submitForm($event, 'comment')" action="{{ route('comments.store', $recipe) }}" method="POST">
                             @csrf
                             <h4 class="text-lg font-semibold mb-2">نظر شما</h4>
-                            <textarea name="body" rows="4" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500" placeholder="نظر خود را بنویسید...">{{ old('body') }}</textarea>
+                            <textarea name="body" rows="4" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500" placeholder="نظر خود را بنویسید..."></textarea>
                             <div class="mt-3">
-                                <button type="submit" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">ارسال نظر</button>
+                                <button type="submit" :disabled="isLoading" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 disabled:bg-blue-400">ارسال نظر</button>
                             </div>
                         </form>
                     </div>
@@ -127,22 +168,9 @@
                     </div>
                 @endauth
 
-                {{-- لیست نظرات --}}
-                <div class="mt-8 border-t pt-6 space-y-6">
-                    @forelse ($recipe->comments->sortByDesc('created_at') as $comment)
-                        <div class="flex space-x-4 space-x-reverse">
-                            <img src="{{ $comment->user->profile_image_path ? asset('storage/' . $comment->user->profile_image_path) : 'https://ui-avatars.com/api/?name='.urlencode($comment->user->name) }}" alt="{{ $comment->user->name }}" class="w-12 h-12 rounded-full">
-                            <div class="flex-1">
-                                <div class="flex justify-between items-center">
-                                    <p class="font-semibold text-gray-800">{{ $comment->user->name }}</p>
-                                    <span class="text-xs text-gray-500">{{ verta($comment->created_at)->formatDifference() }}</span>
-                                </div>
-                                <p class="text-gray-600 mt-1">{{ $comment->body }}</p>
-                            </div>
-                        </div>
-                    @empty
-                        <p class="text-gray-500 text-center">اولین نفری باشید که نظر می‌دهد!</p>
-                    @endforelse
+                {{-- کانتینر برای بارگذاری مجدد لیست نظرات --}}
+                <div id="comments-section">
+                    @include('recipes.partials._comments_section', ['recipe' => $recipe])
                 </div>
             </div>
         </div>

@@ -6,8 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property-read \Illuminate\Database\Eloquent\Collection|User[] $followers
+ * @property-read \Illuminate\Database\Eloquent\Collection|User[] $followings
+ * @property-read \Illuminate\Database\Eloquent\Collection|Recipe[] $recipes
+ * @property-read bool $is_admin
+ */
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, SoftDeletes;
@@ -31,29 +39,27 @@ class User extends Authenticatable
 
     // --- Relationships ---
 
-    public function recipes()
+    public function recipes(): HasMany
     {
         return $this->hasMany(Recipe::class);
     }
 
-    public function comments()
+    public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
 
-    public function ratings()
+    public function ratings(): HasMany
     {
         return $this->hasMany(Rating::class);
     }
 
-
-
-    public function followings()
+    public function followings(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id');
     }
 
-    public function followers()
+    public function followers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id');
     }
@@ -63,9 +69,8 @@ class User extends Authenticatable
     /**
      * بررسی می‌کند که آیا کاربر فعلی، کاربر دیگری را دنبال می‌کند یا خیر.
      */
-    public function isFollowing(User $user)
+    public function isFollowing(User $user): bool
     {
-        // ما در رابطه followings به دنبال آی‌دی کاربری که می‌خواهیم بررسی کنیم، می‌گردیم.
         return $this->followings()->where('following_id', $user->id)->exists();
     }
 

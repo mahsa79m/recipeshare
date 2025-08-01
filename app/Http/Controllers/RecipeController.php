@@ -17,9 +17,12 @@ class RecipeController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index(Request $request)
     {
-        $query = Recipe::query();
+        $query = Recipe::query()->where('is_active', true)
+            ->with('user', 'category')
+            ->latest();
 
         if ($request->has('search') && $request->search != '') {
             $searchTerm = $request->search;
@@ -30,15 +33,20 @@ class RecipeController extends Controller
             });
         }
 
-        $recipes = $query->where('is_active', true)
-                ->with('user', 'category')
-                ->latest()
-                ->paginate(12);
+        $recipes = $query->paginate(12);
 
+        // اگر درخواست از نوع AJAX باشد (برای اسکرول بی‌نهایت)
+        if ($request->ajax()) {
+            $view = view('recipes.partials._recipe_cards', compact('recipes'))->render();
+            return response()->json(['html' => $view, 'hasMorePages' => $recipes->hasMorePages()]);
+        }
+
+        // برای بارگذاری اولیه صفحه
         return view('recipes.index', [
             'recipes' => $recipes,
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -55,12 +63,12 @@ class RecipeController extends Controller
     {
         $this->authorize('view', $recipe);
 
-        $recipe->load('comments.user');
+        // --- تغییر اصلی در این بخش است ---
+        // ما نظرات اصلی را به همراه پاسخ‌هایشان (و کاربر هر پاسخ) بارگذاری می‌کنیم
+        $recipe->load(['comments.user', 'comments.replies.user']);
 
         $averageRating = $recipe->ratings()->avg('rating');
         $ratingsCount = $recipe->ratings()->count();
-
-        // متغیر isFollowing به طور کامل از این متد حذف شد
 
         return view('recipes.show', [
             'recipe' => $recipe,
@@ -68,7 +76,6 @@ class RecipeController extends Controller
             'ratingsCount' => $ratingsCount,
         ]);
     }
-
     /**
      * Store a newly created resource in storage.
      */
