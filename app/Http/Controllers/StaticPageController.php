@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class StaticPageController extends Controller
 {
     /**
-     * نمایش صفحه درباره ما.
+     * درباره ما.
      */
     public function about()
     {
@@ -15,7 +15,7 @@ class StaticPageController extends Controller
     }
 
     /**
-     * نمایش صفحه تماس با ما.
+     * تماس با ما
      */
     public function contact()
     {
@@ -23,7 +23,7 @@ class StaticPageController extends Controller
     }
 
     /**
-     * نمایش صفحه سوالات متداول.
+     *  سوالات متداول
      */
     public function faq()
     {

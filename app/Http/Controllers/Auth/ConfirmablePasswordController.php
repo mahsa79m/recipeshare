@@ -9,10 +9,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
+/**
+ * تایید رمز عبور
+ *
+ * کنترلر برای تایید مجدد رمز عبور کاربر در عملیات حساس.
+ */
 class ConfirmablePasswordController extends Controller
 {
     /**
-     * Show the confirm password view.
+     * نمایش صفحه تایید رمز عبور
      */
     public function show(): View
     {
@@ -20,7 +25,7 @@ class ConfirmablePasswordController extends Controller
     }
 
     /**
-     * Confirm the user's password.
+     *تایید رمز عبور کاربر
      */
     public function store(Request $request): RedirectResponse
     {

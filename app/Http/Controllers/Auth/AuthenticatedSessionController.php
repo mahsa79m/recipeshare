@@ -8,22 +8,36 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * مدیریت نشست‌های احراز هویت
+ *
+ * کنترلر برای نمایش صفحه ورود، مدیریت فرآیند ورود و خروج کاربر.
+ */
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Display the login view.
-     */
     public function create()
     {
         return view('auth.login');
     }
 
     /**
-     * Handle an incoming authentication request.
+     * مدیریت درخواست احراز هویت ورودی
      */
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
+
+        $user = Auth::user();
+
+        if (!$user->is_active) {
+
+            Auth::logout();
+
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')->with('error', 'حساب کاربری شما توسط مدیر معلق شده است.');
+        }
 
         $request->session()->regenerate();
 
@@ -31,7 +45,7 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Destroy an authenticated session.
+     * از بین بردن نشست احراز هویت
      */
     public function destroy(Request $request): RedirectResponse
     {

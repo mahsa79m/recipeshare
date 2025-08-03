@@ -6,10 +6,19 @@ use App\Models\Recipe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * مدیریت نظرات
+ *
+ * کنترلر برای ذخیره نظرات و پاسخ‌های کاربران برای دستورهای غذا.
+ */
 class CommentController extends Controller
 {
     /**
-     * یک نظر جدید یا پاسخ را برای یک دستور غذا ذخیره می‌کند.
+     * ذخیره یک نظر جدید یا پاسخ.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Recipe  $recipe
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function store(Request $request, Recipe $recipe)
     {
@@ -18,18 +27,18 @@ class CommentController extends Controller
             'parent_id' => 'nullable|exists:comments,id',
         ]);
 
-        $recipe->allComments()->create([ // از رابطه allComments برای ثبت استفاده می‌کنیم
+         // ایجاد نظر جدید با استفاده از رابطه allComments
+        $recipe->allComments()->create([
             'user_id' => Auth::id(),
             'body' => $request->body,
             'parent_id' => $request->parent_id,
         ]);
 
-        // اگر درخواست از نوع AJAX باشد، بخش نظرات را دوباره رندر کرده و برگردان
+         // بررسی نوع درخواست (AJAX یا معمولی)
         if ($request->ajax()) {
-            // بارگذاری مجدد دستور غذا با تمام نظرات و پاسخ‌های به‌روز شده
+            // بارگذاری مجدد روابط برای نمایش نظرات به روز شده
             $recipe->load(['comments.user', 'comments.replies.user']);
 
-            // رندر کردن بخش نظرات به صورت یک partial view
             $commentsHtml = view('recipes.partials._comments_section', ['recipe' => $recipe])->render();
 
             return response()->json([

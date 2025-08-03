@@ -10,20 +10,22 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-        <link href="https://fonts.googleapis.com/css2?family=Sahel:wght@400;700&display=swap" rel="stylesheet">
+        {{-- فونت وزیرمتن برای فارسی و فونت Inter برای انگلیسی --}}
+        <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <!-- Styles -->
         <style>
-            body {
-                font-family: 'Sahel', sans-serif;
+            /* اعمال فونت‌های وزیرمتن و Inter به کل صفحه */
+            body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
+                font-family: 'Vazirmatn', 'Inter', sans-serif;
             }
         </style>
     </head>
-    <body class="font-sans text-gray-900 antialiased">
+    <body class="text-gray-900 antialiased">
         <div class="min-h-screen bg-gray-100">
             {{ $slot }}
         </div>

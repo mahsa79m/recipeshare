@@ -1,6 +1,5 @@
 <x-guest-layout>
     <div class="flex min-h-screen">
-        <!-- بخش فرم  -->
         <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-100">
             <div class="w-full max-w-md">
                 <div class="text-center mb-10">
@@ -9,7 +8,14 @@
                 </div>
 
                 <div class="bg-white p-8 rounded-2xl shadow-lg">
+
                     <x-auth-session-status class="mb-4" :status="session('status')" />
+
+                    @if (session('error'))
+                        <div class="mb-4 font-medium text-sm text-red-700 bg-red-100 p-4 rounded-lg" role="alert">
+                            {{ session('error') }}
+                        </div>
+                    @endif
 
                     <form method="POST" action="{{ route('login') }}" class="space-y-6">
                         @csrf
@@ -19,6 +25,7 @@
                             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
                             <x-input-error :messages="$errors->get('email')" class="mt-2" />
                         </div>
+
                         <div>
                             <div class="flex justify-between items-center">
                                 <x-input-label for="password" value="رمز عبور" />
@@ -31,12 +38,14 @@
                             <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
                             <x-input-error :messages="$errors->get('password')" class="mt-2" />
                         </div>
+
                         <div class="block">
                             <label for="remember_me" class="inline-flex items-center">
                                 <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-amber-600 shadow-sm focus:ring-amber-500" name="remember">
                                 <span class="mr-2 text-sm text-gray-600">مرا به خاطر بسپار</span>
                             </label>
                         </div>
+
                         <div>
                             <x-primary-button class="w-full justify-center">
                                 ورود به حساب کاربری
@@ -56,7 +65,6 @@
             </div>
         </div>
 
-        <!-- بخش تصویر -->
         <div class="hidden lg:block w-1/2 bg-cover bg-center" style="background-image: url({{ asset('images/login-bg.jpg') }});">
         </div>
     </div>

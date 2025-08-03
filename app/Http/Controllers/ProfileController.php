@@ -10,21 +10,28 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
+/**
+ * کنترلر پروفایل کاربر
+ *
+ * اینجا کارهای مربوط به نمایش، به‌روزرسانی و حذف پروفایل کاربر رو انجام می‌دیم.
+ */
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * نمایش فرم ویرایش پروفایل.
+     *
+     * @return \Illuminate\View\View
      */
     public function edit(Request $request): View
     {
-        // به حالت استاندارد برگشتیم: نمایش view در profile.edit
+
         return view('profile.edit', [
             'user' => $request->user(),
         ]);
     }
 
     /**
-     * Update the user's profile information.
+     * به‌روزرسانی اطلاعات پروفایل کاربر
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
@@ -45,12 +52,11 @@ class ProfileController extends Controller
 
         $user->save();
 
-        // به حالت استاندارد برگشتیم: هدایت به همان صفحه profile.edit
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
     /**
-     * Delete the user's account.
+     * حذف حساب کاربری
      */
     public function destroy(Request $request): RedirectResponse
     {

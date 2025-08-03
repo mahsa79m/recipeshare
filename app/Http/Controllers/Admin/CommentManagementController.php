@@ -6,16 +6,23 @@ use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 
+/**
+ * مدیریت نظرات
+ *
+ * کنترلر برای مشاهده، بازیابی و حذف دائمی نظرات در پنل ادمین.
+ */
 class CommentManagementController extends Controller
 {
     /**
-     * Display a listing of all comments, including soft-deleted ones.
+     * نمایش لیست تمام نظرات (شامل حذف شده‌ها)
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
-        // با استفاده از withTrashed، ما تمام نظرات، حتی حذف شده‌ها را دریافت می‌کنیم
+       // دریافت تمام نظرات، شامل آنهایی که سافت دلیت شده‌اند
         $comments = Comment::withTrashed()
-            ->with('user', 'recipe') // لود کردن اطلاعات کاربر و دستور غذا برای نمایش
+            ->with('user', 'recipe') // لود کردن روابط کاربر و دستور غذا
             ->latest()
             ->paginate(20);
 
@@ -23,11 +30,14 @@ class CommentManagementController extends Controller
     }
 
     /**
-     * Restore a soft-deleted comment.
+     * بازیابی یک نظر حذف شده
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function restore($id)
     {
-        // فقط نظرات حذف شده را پیدا کرده و بازیابی کن
+        // پیدا کردن و بازیابی نظر سافت دلیت شده
         $comment = Comment::onlyTrashed()->findOrFail($id);
         $comment->restore();
 
@@ -35,11 +45,14 @@ class CommentManagementController extends Controller
     }
 
     /**
-     * Permanently delete a comment.
+     * حذف دائمی یک نظر
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function forceDelete($id)
     {
-        // فقط نظرات حذف شده را پیدا کرده و برای همیشه حذف کن
+        // پیدا کردن و حذف دائمی نظر سافت دلیت شده
         $comment = Comment::onlyTrashed()->findOrFail($id);
         $comment->forceDelete();
 

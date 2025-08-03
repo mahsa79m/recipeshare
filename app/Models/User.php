@@ -76,11 +76,12 @@ class User extends Authenticatable
 
     /**
      * Accessor برای بررسی نقش ادمین.
+     * (اصلاح شد: این نسخه به حروف بزرگ/کوچک و فاصله‌های اضافی حساس نیست)
      */
     protected function isAdmin(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->role === 'admin',
+            get: fn () => strtolower(trim($this->role)) === 'admin',
         );
     }
 }

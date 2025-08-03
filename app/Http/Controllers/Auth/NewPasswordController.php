@@ -13,6 +13,11 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
+/**
+ * بازنشانی رمز عبور
+ *
+ * کنترلر برای نمایش فرم بازنشانی و مدیریت فرآیند تغییر رمز عبور.
+ */
 class NewPasswordController extends Controller
 {
     /**

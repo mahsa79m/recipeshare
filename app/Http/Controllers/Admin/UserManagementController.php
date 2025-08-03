@@ -7,14 +7,21 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * مدیریت کاربران
+ *
+ * کنترلر برای مشاهده و مدیریت وضعیت کاربران.
+ */
 class UserManagementController extends Controller
 {
     /**
-     * Display a list of all users.
+     * نمایش لیست تمام کاربران
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
-        // دریافت تمام کاربران به جز مدیر فعلی، و صفحه‌بندی نتایج
+         // دریافت تمام کاربران به جز مدیر فعلی
         $users = User::where('id', '!=', Auth::id())
                      ->latest()
                      ->paginate(20);
@@ -23,13 +30,14 @@ class UserManagementController extends Controller
     }
 
     /**
-     * Toggle the active status of a user account.
-     * (فعال/غیرفعال کردن حساب کاربری)
+     * فعال/غیرفعال کردن حساب کاربری
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function toggleStatus(User $user)
     {
-        // تغییر وضعیت 'is_active'
-        // اگر true بود false می‌شود و برعکس
+        // تغییر وضعیت فعلی کاربر
         $user->is_active = !$user->is_active;
         $user->save();
 

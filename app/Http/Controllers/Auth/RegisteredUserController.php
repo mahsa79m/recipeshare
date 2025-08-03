@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
+/**
+ * ثبت نام کاربران
+ *
+ * کنترلر برای نمایش فرم ثبت نام و مدیریت فرآیند ثبت نام کاربر جدید.
+ */
 class RegisteredUserController extends Controller
 {
     /**
@@ -45,6 +50,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        // ری دایرکت به داشبورد
         return redirect(route('dashboard', absolute: false));
     }
 }

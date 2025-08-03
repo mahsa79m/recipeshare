@@ -6,21 +6,34 @@ use App\Models\Category;
 use App\Models\Recipe;
 use Illuminate\Http\Request;
 
+/**
+ * نمایش دسته‌بندی‌ها
+ *
+ * کنترلر برای نمایش دستورهای غذایی مرتبط با یک دسته‌بندی خاص.
+ */
 class CategoryController extends Controller
 {
     /**
-     * Display the specified resource.
+     * نمایش جزئیات یک دسته‌بندی و دستورهای مرتبط با آن.
+     *
+     * @param  \App\Models\Category  $category
+     * @return \Illuminate\View\View
      */
     public function show(Category $category)
     {
-        // دستورهای غذایی فعال مربوط به این دسته‌بندی را به همراه اطلاعات کاربر بارگذاری می‌کنیم
+        $userIsActiveCondition = function ($query) {
+            $query->where('is_active', true);
+        };
+
+       // دریافت دستورهای غذایی فعال مربوط به این دسته‌بندی
         $recipes = $category->recipes()
                             ->where('is_active', true)
+                            ->whereHas('user', $userIsActiveCondition)
                             ->with('user')
                             ->latest()
-                            ->paginate(12); // صفحه بندی نتایج
+                            ->paginate(12); // در هر صفحه 12 دستور
 
-        // ارسال داده‌ها به یک View جدید
+        // ارسال داده‌ها به ویو
         return view('categories.show', [
             'category' => $category,
             'recipes' => $recipes,

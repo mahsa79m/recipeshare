@@ -1,10 +1,12 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany; // <-- اضافه شد
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Report;
+use App\Scopes\ActiveUserRecipeScope;
 
 class Recipe extends Model
 {
@@ -14,22 +16,20 @@ class Recipe extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'user_id',
-        'category_id',
-        'title',
-        'description',
-        'ingredients',
-        'image_path',
-        'is_active',
-    ];
-
+            'title', 'description', 'ingredients', 'image_path', 'user_id', 'category_id', 'is_active'
+        ];
     /**
      * The attributes that should be cast.
      */
-    protected $casts = [
-        'is_active' => 'boolean',
-    ];
+     protected $casts = [
+            'is_active' => 'boolean',
+           // 'ingredients' => 'array', // اگر ingredients را به صورت JSON ذخیره می‌کنید
+        ];
 
+     protected static function booted()
+        {
+            static::addGlobalScope(new ActiveUserRecipeScope);
+        }
     // =================================================================
     // Relationships
     // =================================================================
@@ -44,22 +44,24 @@ class Recipe extends Model
         return $this->belongsTo(Category::class);
     }
 
-    /**
-     * Get only the top-level comments for the recipe.
-     * (فقط نظرات اصلی، بدون پاسخ‌ها)
-     */
     public function comments()
     {
         return $this->hasMany(Comment::class)->whereNull('parent_id');
     }
 
-    public function allComments()
+    public function allComments(): HasMany
     {
-    return $this->hasMany(Comment::class);
+        return $this->hasMany(Comment::class);
     }
 
     public function ratings()
     {
         return $this->hasMany(Rating::class);
+    }
+
+
+    public function reports(): HasMany
+    {
+        return $this->hasMany(Report::class);
     }
 }

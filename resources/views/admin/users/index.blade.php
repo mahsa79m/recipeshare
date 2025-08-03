@@ -8,6 +8,7 @@
             </div>
         @endif
 
+        {{-- این div جدید باعث ریسپانسیو شدن جدول می‌شود --}}
         <div class="overflow-x-auto bg-white rounded-lg shadow">
             <table class="min-w-full">
                 <thead>

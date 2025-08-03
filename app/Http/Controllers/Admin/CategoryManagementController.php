@@ -8,11 +8,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
+ /**
+     * مدیریت دسته‌بندی‌ها
+     * کنترلر برای ایجاد، ویرایش، حذف و نمایش دسته‌بندی‌ها در پنل ادمین.
+     */
 class CategoryManagementController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * نمایش لیست دسته‌بندی‌ها
+     *
+     * @return \Illuminate\View\View
      */
+
     public function index()
     {
         $categories = Category::latest()->paginate(15);
@@ -20,7 +27,9 @@ class CategoryManagementController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * نمایش فرم ایجاد دسته‌بندی جدید
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -28,26 +37,34 @@ class CategoryManagementController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * ذخیره دسته‌بندی جدید
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
+        // اعتبارسنجی اطلاعات ورودی
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name',
             'slug' => 'nullable|string|max:255|unique:categories,slug',
         ]);
 
+        // ایجاد Slug در صورت خالی بودن
         Category::create([
             'name' => $validated['name'],
             'slug' => $validated['slug'] ?? Str::slug($validated['name']),
-            'is_active' => true, // دسته‌بندی‌های جدید به صورت پیش‌فرض فعال هستند
+            'is_active' => true,
         ]);
 
         return redirect()->route('admin.categories.index')->with('success', 'دسته‌بندی جدید با موفقیت ایجاد شد.');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * نمایش فرم ویرایش یک دسته‌بندی
+     *
+     * @param  \App\Models\Category  $category
+     * @return \Illuminate\View\View
      */
     public function edit(Category $category)
     {
@@ -55,7 +72,11 @@ class CategoryManagementController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * به‌روزرسانی دسته‌بندی
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Category  $category
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Category $category)
     {
@@ -73,16 +94,19 @@ class CategoryManagementController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * حذف یک دسته‌بندی
+     *
+     * @param  \App\Models\Category  $category
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Category $category)
     {
-        // برای جلوگیری از حذف تصادفی دستورهای غذا،
-        // ابتدا بررسی می‌کنیم که آیا دسته‌بندی هیچ دستور غذایی دارد یا نه.
-        if ($category->recipes()->count() > 0) {
+        // جلوگیری از حذف در صورت وجود دستور غذایی مرتبط
+            if ($category->recipes()->count() > 0) {
             return back()->with('error', 'امکان حذف این دسته‌بندی وجود ندارد زیرا دستورهای غذایی به آن متصل هستند.');
         }
 
+        // حذف دسته‌بندی از دیتابیس
         $category->delete();
 
         return redirect()->route('admin.categories.index')->with('success', 'دسته‌بندی با موفقیت حذف شد.');

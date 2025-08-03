@@ -7,19 +7,22 @@
     <title>پنل کاربری - {{ config('app.name', 'Laravel') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    {{-- فونت وزیرمتن برای فارسی و فونت Inter برای انگلیسی --}}
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        body { font-family: 'Vazirmatn', sans-serif; }
+        /* اعمال فونت‌های وزیرمتن و Inter به کل صفحه */
+        body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
+            font-family: 'Vazirmatn', 'Inter', sans-serif;
+        }
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body class="font-sans antialiased bg-gray-100">
+<body class="antialiased bg-gray-100"> {{-- کلاس font-sans حذف شد --}}
     <div x-data="{ sidebarOpen: false }" class="flex h-screen bg-gray-100">
-        <!-- Overlay for mobile -->
         <div x-show="sidebarOpen" x-cloak class="fixed inset-0 z-20 bg-black bg-opacity-50 transition-opacity lg:hidden" @click="sidebarOpen = false"></div>
 
-        <!-- Sidebar -->
         <aside
             x-cloak
             class="fixed inset-y-0 right-0 z-30 flex flex-col w-full max-w-xs sm:w-64 overflow-y-auto transition-transform duration-300 transform bg-white shadow-lg lg:static lg:translate-x-0"
@@ -32,26 +35,17 @@
             </div>
 
             <nav class="flex-1 px-2 py-4 space-y-2">
-                <!-- دکمه جدید: بازگشت به سایت -->
                 <a class="flex items-center px-4 py-2 text-gray-700 rounded-md transition-colors hover:bg-gray-100" href="{{ route('home') }}">
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" /></svg>
                     <span class="mx-3">بازگشت به سایت</span>
                 </a>
-
                 <hr class="my-2">
-
                 <a class="flex items-center px-4 py-2 text-gray-700 rounded-md transition-colors {{ request()->routeIs('dashboard') ? 'bg-amber-100 text-amber-700 font-bold' : 'hover:bg-gray-100' }}" href="{{ route('dashboard') }}">
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
                     <span class="mx-3">داشبورد</span>
                 </a>
-                <a class="flex items-center px-4 py-2 text-gray-700 rounded-md transition-colors {{ request()->routeIs('my-recipes') ? 'bg-amber-100 text-amber-700 font-bold' : 'hover:bg-gray-100' }}" href="{{ route('my-recipes') }}">
-                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
-                    <span class="mx-3">دستورهای من</span>
-                </a>
-
                 <hr class="my-2">
                 <p class="px-4 pt-2 pb-1 text-xs font-semibold text-gray-400 uppercase">تنظیمات حساب</p>
-
                 <a class="flex items-center px-4 py-2 text-gray-700 rounded-md transition-colors {{ request()->routeIs('profile.edit') && !request('tab') ? 'bg-amber-100 text-amber-700 font-bold' : 'hover:bg-gray-100' }}" href="{{ route('profile.edit') }}">
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                     <span class="mx-3">ویرایش پروفایل</span>
@@ -75,7 +69,6 @@
             </div>
         </aside>
 
-        <!-- Main content -->
         <div class="flex-1 flex flex-col overflow-hidden">
             <header class="flex items-center justify-between px-6 py-4 bg-white border-b h-20">
                 <div class="flex items-center">
@@ -87,7 +80,7 @@
                     </div>
                 </div>
                 <div class="flex items-center">
-                    <a href="{{ route('users.show', Auth::user()) }}" class="text-sm text-gray-600 hover:text-amber-600" target="_blank">مشاهده پروفایل عمومی</a>
+                    <a href="{{ route('users.show', Auth::user()) }}" class="text-sm text-gray-600 hover:text-amber-600" target="_blank">پروفایل کاربر</a>
                 </div>
             </header>
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">

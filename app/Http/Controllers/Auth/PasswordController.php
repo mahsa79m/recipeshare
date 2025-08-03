@@ -8,10 +8,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
+/**
+ * مدیریت رمز عبور
+ *
+ * کنترلر برای به‌روزرسانی رمز عبور کاربر.
+ */
 class PasswordController extends Controller
 {
     /**
-     * Update the user's password.
+     * به‌روزرسانی رمز عبور کاربر
      */
     public function update(Request $request): RedirectResponse
     {
@@ -20,6 +25,7 @@ class PasswordController extends Controller
             'password' => ['required', Password::defaults(), 'confirmed'],
         ]);
 
+        // به‌روزرسانی رمز عبور در دیتابیس
         $request->user()->update([
             'password' => Hash::make($validated['password']),
         ]);

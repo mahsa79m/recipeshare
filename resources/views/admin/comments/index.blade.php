@@ -23,7 +23,6 @@
                             <td class="px-6 py-4">{{ Str::limit($comment->body, 60) }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $comment->user->name ?? '[کاربر حذف شده]' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                {{-- *** تغییر اصلی در این بخش است *** --}}
                                 @if ($comment->recipe)
                                     <a href="{{ route('recipes.show', $comment->recipe) }}" target="_blank" class="hover:underline text-amber-600">
                                         {{ Str::limit($comment->recipe->title, 25) }}
@@ -41,7 +40,6 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap flex space-x-2 space-x-reverse">
                                 @if ($comment->trashed())
-                                    {{-- دکمه‌های بازیابی و حذف دائمی --}}
                                     <form action="{{ route('admin.comments.restore', $comment->id) }}" method="POST">
                                         @csrf
                                         @method('PATCH')
@@ -53,7 +51,6 @@
                                         <button type="submit" class="px-3 py-1 text-xs text-white bg-red-700 rounded-md hover:bg-red-800">حذف دائمی</button>
                                     </form>
                                 @else
-                                    {{-- دکمه حذف نرم --}}
                                     {{-- Note: The destroy route for admin is not created yet. This is a placeholder. --}}
                                     <form action="#" method="POST">
                                         @csrf

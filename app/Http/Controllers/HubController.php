@@ -4,50 +4,59 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Recipe; // <-- این خط را اضافه کنید
+use App\Models\Recipe;
 
+/**
+ * کنترلر داشبورد کاربر
+ *
+ * اینجا اطلاعات پروفایل کاربر رو برای نمایش آماده می‌کنه.
+ */
 class HubController extends Controller
 {
-    // این متد، صفحه اصلی داشبور (پروفایل من) را نمایش می‌دهد
+    /**
+     * نمایش پروفایل و داشبورد اصلی کاربر.
+     *
+     * @return \Illuminate\View\View
+     */
     public function showMyProfile()
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
-
-        // آمار قبلی شما
+        $userIsActiveCondition = function ($query) {
+            $query->where('is_active', true);
+        };
         $recipesCount = $user->recipes()->where('is_active', true)->count();
         $followersCount = $user->followers()->count();
         $followingsCount = $user->followings()->count();
 
-        // --- منطق جدید برای فید فعالیت‌ها ---
-        // 1. گرفتن شناسه‌ی کاربرانی که دنبالشان می‌کنید
-        $followingIds = $user->followings()->pluck('users.id');
+        $recipes = $user->recipes()
+        ->where('is_active', true)
+        ->latest()
+        ->paginate(12, ['*'], 'recipes_page');
 
-        // 2. گرفتن آخرین ۱۰ دستور غذایی از این کاربران
-        $feedRecipes = Recipe::whereIn('user_id', $followingIds)
-            ->where('is_active', true)
-            ->with('user') // بهینه‌سازی برای جلوگیری از کوئری اضافه
-            ->latest()
-            ->take(10)
-            ->get();
+        $followers = $user->followers()
+        ->where($userIsActiveCondition)
+        ->paginate(21, ['*'], 'followers_page');
 
-        // ارسال تمام داده‌ها به ویو
+        $followings = $user->followings()
+        ->where($userIsActiveCondition)
+        ->paginate(21, ['*'], 'followings_page');
+
+        // چک می‌کنیم چه کسانی رو دنبال کرده تا دکمه‌ها درست نمایش داده بشن
+        $followingIdsOnPage = $user->followings()
+        ->where($userIsActiveCondition)
+        ->pluck('users.id');
+
+        // ارسال همه داده‌ها به ویو
         return view('dashboard', compact(
             'user',
             'recipesCount',
             'followersCount',
             'followingsCount',
-            'feedRecipes' // <-- ارسال داده‌های فید به ویو
+            'recipes',
+            'followers',
+            'followings',
+            'followingIdsOnPage'
         ));
-    }
-
-    // این متد، صفحه "دستورهای من" را نمایش می‌دهد
-    public function showMyRecipes()
-    {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-
-        $recipes = $user->recipes()->latest()->paginate(12);
-        return view('my-recipes', compact('recipes'));
     }
 }

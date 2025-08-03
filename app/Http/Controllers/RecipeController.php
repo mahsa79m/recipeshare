@@ -21,15 +21,18 @@ class RecipeController extends Controller
     public function index(Request $request)
     {
         $query = Recipe::query()->where('is_active', true)
+            ->whereHas('user', function ($q) {
+                $q->where('is_active', true);
+            })
             ->with('user', 'category')
             ->latest();
 
         if ($request->has('search') && $request->search != '') {
             $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
+            $query->where(function ($q) use ($searchTerm) {
                 $q->where('title', 'like', '%' . $searchTerm . '%')
-                  ->orWhere('description', 'like', '%' . $searchTerm . '%')
-                  ->orWhere('ingredients', 'like', '%' . $searchTerm . '%');
+                    ->orWhere('description', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('ingredients', 'like', '%' . $searchTerm . '%');
             });
         }
 
@@ -41,7 +44,6 @@ class RecipeController extends Controller
             return response()->json(['html' => $view, 'hasMorePages' => $recipes->hasMorePages()]);
         }
 
-        // برای بارگذاری اولیه صفحه
         return view('recipes.index', [
             'recipes' => $recipes,
         ]);
@@ -62,8 +64,6 @@ class RecipeController extends Controller
     public function show(Recipe $recipe)
     {
         $this->authorize('view', $recipe);
-
-        // --- تغییر اصلی در این بخش است ---
         // ما نظرات اصلی را به همراه پاسخ‌هایشان (و کاربر هر پاسخ) بارگذاری می‌کنیم
         $recipe->load(['comments.user', 'comments.replies.user']);
 
@@ -87,9 +87,9 @@ class RecipeController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-           'description' => 'required|string',
-           'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'ingredients' => 'required|array', // اطمینان از اینکه مواد لازم به صورت آرایه ارسال شده
+            'description' => 'required|string',
+            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'ingredients' => 'required|array',
             'ingredients.*.quantity' => 'nullable|string|max:50',
             'ingredients.*.unit' => 'required|string|max:50',
             'ingredients.*.name' => 'required|string|max:255',
@@ -101,15 +101,15 @@ class RecipeController extends Controller
         }
 
         $validatedData['user_id'] = Auth::id();
-        $validatedData['is_active'] = false;
 
-         // *** تغییر اصلی در این بخش است ***
-        // ما آرایه مواد لازم را به یک رشته JSON تبدیل می‌کنیم
+        // دستورها به صورت پیش‌فرض فعال منتشر میشن
+        $validatedData['is_active'] = true;
+
         $validatedData['ingredients'] = json_encode($request->ingredients);
 
         Recipe::create($validatedData);
 
-        return redirect()->route('recipes.index')->with('success', 'دستور غذای شما با موفقیت ثبت شد و منتظر تایید مدیر است.');
+        return redirect()->route('recipes.index')->with('success', 'دستور غذای شما با موفقیت منتشر شد.');
     }
 
     /**
@@ -176,4 +176,31 @@ class RecipeController extends Controller
         return redirect()->route('recipes.index')->with('success', 'دستور غذا با موفقیت حذف شد.');
     }
 
+    public function feed(Request $request)
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $followingIds = $user->followings()->pluck('users.id');
+
+        if ($followingIds->isEmpty()) {
+            $recipes = Recipe::where('id', -1)->paginate(12); // Return an empty paginator
+        } else {
+            $query = Recipe::whereIn('user_id', $followingIds)
+                ->where('is_active', true)
+                ->with('user', 'category')
+                ->latest();
+
+            $recipes = $query->paginate(12);
+        }
+
+        // اگر درخواست از نوع AJAX باشد (برای اسکرول بی‌نهایت)
+        if ($request->ajax()) {
+            $view = view('recipes.partials._recipe_cards', compact('recipes'))->render();
+            return response()->json(['html' => $view, 'hasMorePages' => $recipes->hasMorePages()]);
+        }
+
+        return view('recipes.feed', [
+            'recipes' => $recipes,
+        ]);
+    }
 }
