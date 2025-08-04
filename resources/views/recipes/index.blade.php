@@ -40,7 +40,6 @@
          }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-            {{-- جستجو --}}
             <div class="mb-8">
                 <form action="{{ route('recipes.index') }}" method="GET">
                     <input type="text" name="search" placeholder="جستجو در میان دستورهای غذایی..."
@@ -49,7 +48,7 @@
                 </form>
             </div>
 
-            {{--  نتایج --}}
+
             <div id="recipes-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 @include('recipes.partials._recipe_cards', ['recipes' => $recipes])
             </div>
@@ -63,7 +62,7 @@
                 </div>
             @endif
 
-            {{-- نشانگر بارگذاری --}}
+
             <div x-show="loading" class="text-center py-8">
                 <p class="text-gray-500">در حال بارگذاری دستورهای بیشتر...</p>
             </div>
