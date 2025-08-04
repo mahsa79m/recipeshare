@@ -16,7 +16,7 @@
         [x-cloak] { display: none !important; }
     </style>
 </head>
-{{-- کلاس font-sans از اینجا حذف شد تا فونت وزیرمتن به درستی اعمال شود --}}
+
 <body class="antialiased bg-slate-100 text-gray-800">
 
     <div class="bg-white shadow-sm sticky top-0 z-50">
@@ -55,13 +55,12 @@
                 </div>
             </section>
 
-            <!-- بخش جدید: فید دنبال‌شوندگان (فقط برای کاربران وارد شده) -->
+            <!-- فید -->
             @auth
                 @if(isset($followedRecipes) && $followedRecipes->isNotEmpty())
                     <section class="bg-white p-4 rounded-2xl shadow-lg mb-12">
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-2xl font-bold text-gray-800">آخرین دستورهای دنبال‌شوندگان</h2>
-                            {{-- دکمه مشاهده همه اضافه شد --}}
                           <a href="{{ route('recipes.feed') }}" class="text-sm font-semibold text-amber-600 hover:underline">مشاهده همه</a>
                         </div>
 
@@ -157,9 +156,8 @@
                 </div>
             </section>
 
-            <!-- Call to Action Section -->
             <section class="bg-amber-500 text-white p-8 rounded-2xl shadow-lg text-center">
-                <h2 class="text-3xl font-bold">هنر آشپزی خود را به اشتراک بگذارید!</h2>
+                <h2 class="text-3xl font-bold">دستورهای آشپزی خود را با دیگران به اشتراک بگذارید!</h2>
                 <p class="mt-4 mb-6 max-w-2xl mx-auto">
                     به جامعه بزرگ آشپزان ما بپیوندید و دستورهای غذایی خلاقانه خود را با دیگران به اشتراک بگذارید. ما منتظر دیدن هنر شما هستیم.
                 </p>

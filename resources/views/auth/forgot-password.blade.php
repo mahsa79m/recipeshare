@@ -1,6 +1,6 @@
 <x-guest-layout>
     <div class="flex min-h-screen">
-        <!-- بخش فرم  -->
+
         <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-100">
             <div class="w-full max-w-md">
                 <div class="text-center mb-10">

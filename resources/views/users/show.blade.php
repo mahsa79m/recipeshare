@@ -12,12 +12,11 @@
          }"
          @open-modal.window="modalOpen = true; modalImageUrl = $event.detail.imageUrl">
 
-        {{-- بخش هدر پروفایل --}}
+        {{-- هدر پروفایل --}}
         <div class="bg-white shadow">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div class="flex flex-col md:flex-row items-center">
 
-                    {{-- عکس پروفایل --}}
                     <button type="button" @click="modalOpen = true; modalImageUrl = '{{ $user->profile_image_path ? asset('storage/' . $user->profile_image_path) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&size=512' }}'" class="flex-shrink-0 focus:outline-none">
                         <img class="h-24 w-24 md:h-32 md:w-32 rounded-full object-cover border-4 border-amber-500 cursor-pointer transition-transform hover:scale-105"
                              src="{{ $user->profile_image_path ? asset('storage/' . $user->profile_image_path) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=random&color=fff&size=128' }}"
@@ -54,7 +53,7 @@
                                     <form action="{{ route('users.unfollow', $user) }}" method="POST">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="px-6 py-2 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 w-32">
-                                            دنبال می‌کنید
+                                            دنبال می کنید
                                         </button>
                                     </form>
                                 @else
@@ -72,7 +71,7 @@
             </div>
         </div>
 
-        {{-- منوی زبانه‌ها --}}
+
         <div class="bg-white border-t">
             <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mb-px flex space-x-6 space-x-reverse" aria-label="Tabs">
                 <button @click="tab = 'recipes'" :class="{ 'border-amber-500 text-amber-600': tab === 'recipes', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': tab !== 'recipes' }" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
@@ -87,7 +86,6 @@
             </nav>
         </div>
 
-        {{-- محتوای زبانه‌ها --}}
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div x-show="tab === 'recipes'" x-cloak>

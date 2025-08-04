@@ -9,7 +9,7 @@
 
             <div class="flex items-center gap-x-4">
 
-                {{-- فقط در موبایل --}}
+                {{-- موبایل --}}
                 <a href="{{ route('recipes.create') }}"
                     class="inline-flex sm:hidden items-center px-4 py-2 bg-amber-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-amber-600 active:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition ease-in-out duration-150">
                     + افزودن دستور غذا
@@ -93,7 +93,7 @@
 
         <div class="container mx-auto max-w-4xl py-12 px-4 space-y-8">
 
-            <!-- بخش اصلی دستور پخت -->
+            <!--  دستور پخت -->
             <div class="bg-white p-6 rounded-2xl shadow-lg">
                 <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-center">{{ $recipe->title }}</h1>
 
@@ -117,7 +117,7 @@
                     </div>
                 @endif
 
-                <!--  نویسنده و منوی  -->
+                <!-- نویسنده و منو  -->
                 <div class="flex justify-between items-center mb-8">
                     <a href="{{ route('users.show', $recipe->user) }}" class="flex items-center">
                         <img class="h-12 w-12 rounded-full object-cover"
@@ -129,7 +129,7 @@
                         </div>
                     </a>
 
-                    <!-- منوی سه نقطه -->
+                    <!-- منو سه نقطه -->
                     @auth
                         <div class="relative">
                             <button @click="menuOpen = !menuOpen"
@@ -201,12 +201,12 @@
                 </div>
             </div>
 
-            <!-- بخش نظر و امتیاز -->
+            <!-- نظر و امتیاز -->
             <div class="bg-white p-6 rounded-2xl shadow-lg">
                 <h3 class="text-2xl font-bold mb-6 text-gray-800">امتیاز و نظرات</h3>
 
                 @auth
-                    <!-- بازکردن فرما  -->
+                    <!-- بازکردن فرمها  -->
                     <div class="flex space-x-4 space-x-reverse mb-6">
                         <button @click="activeForm = (activeForm === 'rating' ? null : 'rating')"
                             :class="activeForm === 'rating' ? 'bg-amber-600' : 'bg-amber-500'"

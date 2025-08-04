@@ -18,7 +18,7 @@ class Comment extends Model
         'recipe_id',
         'body',
         'is_active',
-        'parent_id', // <-- اضافه شد
+        'parent_id',
     ];
 
     /**
@@ -46,7 +46,6 @@ class Comment extends Model
 
     /**
      * Get the parent comment.
-     * (نظر اصلی که این نظر، پاسخی به آن است)
      */
     public function parent()
     {
@@ -55,7 +54,6 @@ class Comment extends Model
 
     /**
      * Get all replies for the comment.
-     * (تمام پاسخ‌های این نظر)
      */
     public function replies()
     {

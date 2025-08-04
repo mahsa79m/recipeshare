@@ -2,7 +2,6 @@
     @forelse ($users as $listUser)
         <div class="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center text-center transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
 
-            {{-- عکس و نام کاربر هر دو به پروفایل لینک می‌شوند --}}
             <a href="{{ route('users.show', $listUser) }}" class="flex flex-col items-center">
                 <img class="h-20 w-20 rounded-full object-cover border-4 border-slate-200"
                      src="{{ $listUser->profile_image_path ? asset('storage/' . $listUser->profile_image_path) : 'https://ui-avatars.com/api/?name=' . urlencode($listUser->name) }}"

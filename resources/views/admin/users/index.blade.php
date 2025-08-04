@@ -8,7 +8,6 @@
             </div>
         @endif
 
-        {{-- این div جدید باعث ریسپانسیو شدن جدول می‌شود --}}
         <div class="overflow-x-auto bg-white rounded-lg shadow">
             <table class="min-w-full">
                 <thead>
@@ -24,11 +23,12 @@
                     @foreach ($users as $user)
                         <tr class="text-sm text-gray-700">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <a href="{{ route('users.show', $user) }}" class="flex items-center hover:text-amber-600 hover:underline">
+                                <a href="{{ route('users.show', $user) }}"
+                                    class="flex items-center hover:text-amber-600 hover:underline">
                                     <div class="flex-shrink-0 w-10 h-10">
                                         <img class="w-10 h-10 rounded-full object-cover"
-                                             src="{{ $user->profile_image_path ? asset('storage/' . $user->profile_image_path) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) }}"
-                                             alt="{{ $user->name }}">
+                                            src="{{ $user->profile_image_path ? asset('storage/' . $user->profile_image_path) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) }}"
+                                            alt="{{ $user->name }}">
                                     </div>
                                     <div class="mr-4">
                                         <div class="font-medium text-gray-900">{{ $user->name }}</div>
@@ -48,7 +48,8 @@
                                 <form action="{{ route('admin.users.toggleStatus', $user) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
-                                    <button type="submit" class="px-3 py-1 text-xs text-white rounded-md {{ $user->is_active ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600' }}">
+                                    <button type="submit"
+                                        class="px-3 py-1 text-xs text-white rounded-md {{ $user->is_active ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600' }}">
                                         {{ $user->is_active ? 'معلق کردن' : 'فعال کردن' }}
                                     </button>
                                 </form>

@@ -35,7 +35,6 @@ class Rating extends Model
 
     /**
      * Get the user that owns the rating.
-     * (کاربری که این امتیاز را ثبت کرده است)
      */
     public function user()
     {
@@ -44,7 +43,6 @@ class Rating extends Model
 
     /**
      * Get the recipe that the rating belongs to.
-     * (دستور غذایی که این امتیاز برای آن ثبت شده است)
      */
     public function recipe()
     {

@@ -7,14 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
 /**
- * کنترلر پروفایل عمومی کاربر
+ * کنترلر پروفایل کاربر
  *
- *  اطلاعات پروفایل ی کاربر رو برای بقیه اوکی می‌کنم
  */
 class UserProfileController extends Controller
 {
     /**
-     * نمایش صفحه پروفایل عمومی یک کاربر.
+     * نمایش صفحه کاربر.
      *
      * @param  \App\Models\User  $user
      * @param  \Illuminate\Http\Request  $request
@@ -22,21 +21,20 @@ class UserProfileController extends Controller
      */
     public function show(User $user, Request $request)
     {
-        // فقط دستورپخت‌های فعال خود کاربر را نمایش بده
+
         $recipes = $user->recipes()
-            ->where('is_active', true) // فرض بر این است که دستورپخت‌ها هم وضعیت فعال/غیرفعال دارند
+            ->where('is_active', true)
             ->latest()
             ->paginate(12, ['*'], 'recipes_page');
 
-        // فقط فالوورهایی را نمایش بده که خودشان فعال هستند
         $followers = $user->followers()
-            ->where('is_active', true) // اصلاح شد: به جای whereHas از where مستقیم استفاده می‌کنیم
+            ->where('is_active', true)
             ->distinct()
             ->paginate(21, ['*'], 'followers_page');
 
-        // فقط فالووینگ‌هایی را نمایش بده که خودشان فعال هستند
+
         $followings = $user->followings()
-            ->where('is_active', true) // اصلاح شد
+            ->where('is_active', true)
             ->distinct()
             ->paginate(21, ['*'], 'followings_page');
 
@@ -48,7 +46,7 @@ class UserProfileController extends Controller
             $allVisibleUserIds = $followers->pluck('id')->merge($followings->pluck('id'))->unique();
             if ($allVisibleUserIds->isNotEmpty()) {
                 $followingIdsOnPage = $currentUser->followings()
-                    ->where('is_active', true) // اصلاح شد
+                    ->where('is_active', true)
                     ->whereIn('users.id', $allVisibleUserIds)
                     ->pluck('users.id');
             }

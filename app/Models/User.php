@@ -66,18 +66,14 @@ class User extends Authenticatable
 
     // --- Custom Methods & Accessors ---
 
-    /**
-     * بررسی می‌کند که آیا کاربر فعلی، کاربر دیگری را دنبال می‌کند یا خیر.
-     */
     public function isFollowing(User $user): bool
     {
         return $this->followings()->where('following_id', $user->id)->exists();
     }
 
-    /**
-     * Accessor برای بررسی نقش ادمین.
-     * (اصلاح شد: این نسخه به حروف بزرگ/کوچک و فاصله‌های اضافی حساس نیست)
-     */
+
+     // به حروف بزرگ/کوچک و فاصله‌های اضافی حساس نیس)
+
     protected function isAdmin(): Attribute
     {
         return Attribute::make(

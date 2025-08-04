@@ -2,8 +2,6 @@
     <x-slot name="header">
         ویرایش پروفایل و تنظیمات
     </x-slot>
-
-    {{-- این استایل کوچک، مشکل پرش تصویر را به طور کامل حل می‌کند --}}
     <style>
         [x-cloak] { display: none !important; }
     </style>
@@ -26,13 +24,12 @@
             }
         }" class="space-y-6">
 
-        <!-- محتوای زبانه‌ها -->
         <div x-cloak>
-            {{-- زبانه اطلاعات پروفایل با پیش‌نمایش --}}
+            {{-- اطلاعات پروفایل --}}
             <div x-show="tab === 'profile'">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                    {{-- ستون فرم ویرایش --}}
+
                     <div class="lg:col-span-2 p-4 sm:p-8 bg-white shadow rounded-lg">
                         <div class="max-w-xl">
                             <section>
@@ -78,7 +75,6 @@
                         </div>
                     </div>
 
-                    {{-- ستون پیش‌نمایش --}}
                     <div class="lg:col-span-1">
                          <div class="p-4 sm:p-8 bg-white shadow rounded-lg sticky top-24">
                             <h3 class="text-lg font-medium text-gray-900 mb-4">
@@ -98,14 +94,14 @@
                 </div>
             </div>
 
-            {{-- زبانه تغییر رمز عبور --}}
+            {{-- تغییر رمز عبور --}}
             <div x-show="tab === 'password'" class="p-4 sm:p-8 bg-white shadow rounded-lg">
                 <div class="max-w-xl">
                     @include('profile.partials.update-password-form')
                 </div>
             </div>
 
-            {{-- زبانه حذف حساب کاربری --}}
+            {{-- حذف حساب کاربری --}}
             <div x-show="tab === 'delete'" class="p-4 sm:p-8 bg-white shadow rounded-lg">
                 <div class="max-w-xl">
                     @include('profile.partials.delete-user-form')

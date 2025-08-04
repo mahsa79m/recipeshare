@@ -24,7 +24,7 @@
 </head>
 <body class="antialiased bg-gray-100">
     <div x-data="{ sidebarOpen: false }" class="flex h-screen bg-gray-100">
-        <!-- Overlay for mobile -->
+        <!--  mobile -->
         <div x-show="sidebarOpen" x-cloak class="fixed inset-0 z-20 bg-black bg-opacity-50 transition-opacity lg:hidden" @click="sidebarOpen = false"></div>
 
         <!-- Sidebar -->
@@ -59,7 +59,6 @@
                     <span class="mx-3">مدیریت نظرات</span>
                 </a>
 
-                {{-- آیتم جدید برای مدیریت گزارش‌ها --}}
                 <a class="flex items-center px-4 py-2 text-gray-100 rounded-md {{ request()->routeIs('admin.reports.index') ? 'bg-gray-700' : 'hover:bg-gray-700' }}" href="{{ route('admin.reports.index') }}">
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.374c-.866-1.5-3.032-1.5-3.898 0L2.697 16.376zM12 15.75h.007v.008H12v-.008z" />
@@ -76,7 +75,6 @@
                         @endif
                     </span>
                 </a>
-                {{-- پایان آیتم جدید --}}
 
             </nav>
 

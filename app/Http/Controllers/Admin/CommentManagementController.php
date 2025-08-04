@@ -8,21 +8,19 @@ use Illuminate\Http\Request;
 
 /**
  * مدیریت نظرات
- *
- * کنترلر برای مشاهده، بازیابی و حذف دائمی نظرات در پنل ادمین.
  */
 class CommentManagementController extends Controller
 {
     /**
-     * نمایش لیست تمام نظرات (شامل حذف شده‌ها)
+     * نمایش لیست تمام نظرات وحتی حذف شده‌ها
      *
      * @return \Illuminate\View\View
      */
     public function index()
     {
-       // دریافت تمام نظرات، شامل آنهایی که سافت دلیت شده‌اند
+
         $comments = Comment::withTrashed()
-            ->with('user', 'recipe') // لود کردن روابط کاربر و دستور غذا
+            ->with('user', 'recipe')
             ->latest()
             ->paginate(20);
 

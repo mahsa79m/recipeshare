@@ -7,9 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Recipe;
 
 /**
- * کنترلر داشبورد کاربر
- *
- * اینجا اطلاعات پروفایل کاربر رو برای نمایش آماده می‌کنه.
+ *  داشبورد کاربر
  */
 class HubController extends Controller
 {
@@ -42,12 +40,10 @@ class HubController extends Controller
         ->where($userIsActiveCondition)
         ->paginate(21, ['*'], 'followings_page');
 
-        // چک می‌کنیم چه کسانی رو دنبال کرده تا دکمه‌ها درست نمایش داده بشن
         $followingIdsOnPage = $user->followings()
         ->where($userIsActiveCondition)
         ->pluck('users.id');
 
-        // ارسال همه داده‌ها به ویو
         return view('dashboard', compact(
             'user',
             'recipesCount',

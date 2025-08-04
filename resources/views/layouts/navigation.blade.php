@@ -1,11 +1,9 @@
 <nav class="bg-white border-b border-gray-100" dir="rtl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
-
-            <!-- سمت راست هدر -->
             <div class="flex-1 flex justify-start items-center">
                 @auth
-                    <!-- منوی کشویی کاربر (فقط دسکتاپ) -->
+                    <!-- منوی کشویی دسکتاپ) -->
                     <div class="hidden sm:flex sm:items-center">
                         <x-dropdown align="left" width="48">
                             <x-slot name="trigger">
@@ -36,7 +34,7 @@
                     </div>
                 @endauth
 
-                <!-- منوی همبرگری (فقط موبایل) - منتقل شده به سمت راست -->
+                <!--منوی همبرگری موبایل -->
                 <div x-data="{ open: false }" class="relative sm:hidden">
                     <button @click="open = !open" class="p-2 rounded-md hover:bg-gray-100 focus:outline-none">
                         <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -60,12 +58,10 @@
                 </div>
             </div>
 
-            <!-- وسط هدر (لوگو) -->
             <div class="flex-shrink-0">
                 <a href="{{ url('/') }}"><span class="text-3xl font-extrabold text-amber-600 hover:text-amber-700 transition">دستور پخت من</span></a>
             </div>
 
-            <!-- سمت چپ هدر -->
             <div class="flex-1 flex justify-end items-center">
                 @auth
                     <a href="{{ route('recipes.create') }}" class="hidden sm:inline-flex items-center px-4 py-2 bg-amber-500 border border-transparent rounded-md font-semibold text-white text-sm hover:bg-amber-600 focus:outline-none transition shadow-md">

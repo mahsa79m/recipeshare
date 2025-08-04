@@ -10,7 +10,6 @@ use Illuminate\Validation\Rule;
 
  /**
      * مدیریت دسته‌بندی‌ها
-     * کنترلر برای ایجاد، ویرایش، حذف و نمایش دسته‌بندی‌ها در پنل ادمین.
      */
 class CategoryManagementController extends Controller
 {
@@ -26,11 +25,7 @@ class CategoryManagementController extends Controller
         return view('admin.categories.index', ['categories' => $categories]);
     }
 
-    /**
-     * نمایش فرم ایجاد دسته‌بندی جدید
-     *
-     * @return \Illuminate\View\View
-     */
+
     public function create()
     {
         return view('admin.categories.create');
@@ -44,7 +39,6 @@ class CategoryManagementController extends Controller
      */
     public function store(Request $request)
     {
-        // اعتبارسنجی اطلاعات ورودی
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name',
             'slug' => 'nullable|string|max:255|unique:categories,slug',
@@ -106,7 +100,6 @@ class CategoryManagementController extends Controller
             return back()->with('error', 'امکان حذف این دسته‌بندی وجود ندارد زیرا دستورهای غذایی به آن متصل هستند.');
         }
 
-        // حذف دسته‌بندی از دیتابیس
         $category->delete();
 
         return redirect()->route('admin.categories.index')->with('success', 'دسته‌بندی با موفقیت حذف شد.');

@@ -10,7 +10,7 @@
 
                 <div class="bg-white p-8 rounded-2xl shadow-lg">
                     <div class="mb-4 text-sm text-gray-600">
-                        این یک بخش امن برنامه است. لطفاً قبل از ادامه، رمز عبور خود را تأیید کنید.
+                     لطفاً قبل از ادامه، رمز عبور خود را تأیید کنید.
                     </div>
 
                     <form method="POST" action="{{ route('password.confirm') }}" class="space-y-6">

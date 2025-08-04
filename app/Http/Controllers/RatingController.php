@@ -8,13 +8,11 @@ use Illuminate\Support\Facades\Auth;
 
 /**
  * کنترلر امتیازدهی
- *
- * اینجا امتیازهایی که کاربران به دستورهای غذا می‌دن رو ثبت و مدیریت میکنه
  */
 class RatingController extends Controller
 {
     /**
-     * ثبت یا به‌روزرسانی امتیاز یک دستور غذا.
+     * ثبت یا به‌روزرسانی امتیاز یک دستور غذا
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Recipe  $recipe

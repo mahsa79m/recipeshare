@@ -8,13 +8,11 @@ use Illuminate\Http\Request;
 
 /**
  * نمایش دسته‌بندی‌ها
- *
- * کنترلر برای نمایش دستورهای غذایی مرتبط با یک دسته‌بندی خاص.
  */
 class CategoryController extends Controller
 {
     /**
-     * نمایش جزئیات یک دسته‌بندی و دستورهای مرتبط با آن.
+     * نمایش یک دسته‌بندی و دستورهای مرتبط
      *
      * @param  \App\Models\Category  $category
      * @return \Illuminate\View\View
@@ -25,7 +23,7 @@ class CategoryController extends Controller
             $query->where('is_active', true);
         };
 
-       // دریافت دستورهای غذایی فعال مربوط به این دسته‌بندی
+
         $recipes = $category->recipes()
                             ->where('is_active', true)
                             ->whereHas('user', $userIsActiveCondition)
@@ -33,7 +31,6 @@ class CategoryController extends Controller
                             ->latest()
                             ->paginate(12); // در هر صفحه 12 دستور
 
-        // ارسال داده‌ها به ویو
         return view('categories.show', [
             'category' => $category,
             'recipes' => $recipes,

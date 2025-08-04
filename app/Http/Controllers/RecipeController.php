@@ -38,7 +38,7 @@ class RecipeController extends Controller
 
         $recipes = $query->paginate(12);
 
-        // اگر درخواست از نوع AJAX باشد (برای اسکرول بی‌نهایت)
+        // اگر درخواست از نوع ایجکس باشد، اسکرول بی‌نهایت
         if ($request->ajax()) {
             $view = view('recipes.partials._recipe_cards', compact('recipes'))->render();
             return response()->json(['html' => $view, 'hasMorePages' => $recipes->hasMorePages()]);
@@ -64,9 +64,7 @@ class RecipeController extends Controller
     public function show(Recipe $recipe)
     {
         $this->authorize('view', $recipe);
-        // ما نظرات اصلی را به همراه پاسخ‌هایشان (و کاربر هر پاسخ) بارگذاری می‌کنیم
         $recipe->load(['comments.user', 'comments.replies.user']);
-
         $averageRating = $recipe->ratings()->avg('rating');
         $ratingsCount = $recipe->ratings()->count();
 
@@ -102,7 +100,6 @@ class RecipeController extends Controller
 
         $validatedData['user_id'] = Auth::id();
 
-        // دستورها به صورت پیش‌فرض فعال منتشر میشن
         $validatedData['is_active'] = true;
 
         $validatedData['ingredients'] = json_encode($request->ingredients);
@@ -193,7 +190,7 @@ class RecipeController extends Controller
             $recipes = $query->paginate(12);
         }
 
-        // اگر درخواست از نوع AJAX باشد (برای اسکرول بی‌نهایت)
+        // اگر درخواست از نوع ایجکس باشد، اسکرول بی‌نهایت
         if ($request->ajax()) {
             $view = view('recipes.partials._recipe_cards', compact('recipes'))->render();
             return response()->json(['html' => $view, 'hasMorePages' => $recipes->hasMorePages()]);

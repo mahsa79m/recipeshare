@@ -1,10 +1,9 @@
 <x-admin-layout>
     <h3 class="text-3xl font-medium text-gray-700">داشبورد</h3>
 
-    {{-- کارت‌های آمار کلی --}}
     <div class="mt-4">
         <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-3">
-            {{-- Card for Total Users (Clickable) --}}
+
             <a href="{{ route('admin.users.index') }}"
                 class="flex items-center p-4 bg-white rounded-lg shadow-md transition-transform duration-300 hover:scale-105 hover:shadow-xl">
                 <div class="p-3 mr-4 text-green-500 bg-green-100 rounded-full">
@@ -21,7 +20,7 @@
                 </div>
             </a>
 
-            {{-- Card for Total Published Recipes (Clickable) --}}
+
             <a href="{{ route('admin.recipes.index') }}"
                 class="flex items-center p-4 bg-white rounded-lg shadow-md transition-transform duration-300 hover:scale-105 hover:shadow-xl">
                 <div class="p-3 mr-4 text-blue-500 bg-blue-100 rounded-full">
@@ -37,7 +36,7 @@
                 </div>
             </a>
 
-            {{-- Card for Pending Reports (Clickable) --}}
+
             <a href="{{ route('admin.reports.index') }}"
                 class="flex items-center p-4 bg-white rounded-lg shadow-md transition-transform duration-300 hover:scale-105 hover:shadow-xl">
                 <div class="p-3 mr-4 text-red-500 bg-red-100 rounded-full">
@@ -56,7 +55,7 @@
         </div>
     </div>
 
-    {{-- چیدمان دو ستونی برای نمودار و لیست محبوب‌ترین‌ها --}}
+
     <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div class="p-6 bg-white rounded-lg shadow">
             <h4 class="text-xl font-semibold text-gray-700 mb-4">روند ثبت‌نام کاربران (۷ روز گذشته)</h4>
@@ -92,9 +91,8 @@
         </div>
     </div>
 
-    {{-- چیدمان سه ستونی برای کاربران و دسته‌بندی‌ها --}}
     <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- ستون فعال‌ترین کاربران -->
+        <!-- فعال‌ترین کاربران -->
         <div class="p-6 bg-white rounded-lg shadow">
             <div class="flex justify-between items-center mb-4">
                 <h4 class="text-xl font-semibold text-gray-700">فعال‌ترین کاربران</h4>
@@ -159,7 +157,7 @@
         </div>
     </div>
 
-    {{-- فراخوانی کتابخانه و اسکریپت نمودار --}}
+    {{--   نمودار --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

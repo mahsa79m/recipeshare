@@ -3,8 +3,6 @@
         <h3 class="text-2xl font-medium text-gray-700">مدیریت دستورهای غذا</h3>
     </div>
 
-    {{-- حذف تب‌های فیلتر --}}
-
     <div class="mt-6">
         @if (session('success'))
             <div class="px-4 py-3 mb-4 text-white bg-green-500 rounded-lg">
@@ -12,7 +10,6 @@
             </div>
         @endif
 
-        {{-- این div جدید باعث ریسپانسیو شدن جدول می‌شود --}}
         <div class="overflow-x-auto bg-white rounded-lg shadow">
             <table class="min-w-full">
                 <thead>

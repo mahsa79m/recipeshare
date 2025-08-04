@@ -9,11 +9,11 @@
             modalImageUrl: ''
         }">
 
-        {{-- کارت اصلی پروفایل کاربر --}}
+        {{--  پروفایل کاربر --}}
         <div class="bg-white p-8 rounded-lg shadow-md">
             <div class="flex flex-col md:flex-row items-center">
 
-                {{-- عکس پروفایل قابل کلیک --}}
+                {{-- عکس  --}}
                 <button type="button" @click="modalOpen = true; modalImageUrl = '{{ $user->profile_image_path ? asset('storage/' . $user->profile_image_path) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&size=512' }}'" class="flex-shrink-0 focus:outline-none">
                     <img class="h-32 w-32 rounded-full object-cover border-4 border-amber-500 cursor-pointer transition-transform hover:scale-105"
                          src="{{ $user->profile_image_path ? asset('storage/' . $user->profile_image_path) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=random&color=fff&size=128' }}"
@@ -23,7 +23,6 @@
                 <div class="md:mr-8 mt-4 md:mt-0 text-center md:text-right">
                     <h1 class="text-3xl font-bold text-gray-800">{{ $user->name }}</h1>
 
-                    {{-- آمار قابل کلیک --}}
                     <div class="flex justify-center md:justify-start space-x-6 space-x-reverse mt-3 text-gray-600">
                         <button @click="openSection = (openSection === 'recipes' ? null : 'recipes')" class="text-center hover:text-amber-600 transition-colors">
                             <span class="font-bold text-lg">{{ $recipesCount }}</span>
@@ -42,9 +41,8 @@
             </div>
         </div>
 
-        {{-- محتوای بخش‌های بازشونده --}}
         <div class="mt-6">
-            <!-- بخش دستورهای من -->
+            <!-- دستورهای من -->
             <div x-show="openSection === 'recipes'" x-cloak x-transition>
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <h3 class="text-xl font-bold text-gray-800 mb-4">دستورهای من</h3>
@@ -68,7 +66,7 @@
                 </div>
             </div>
 
-            <!-- بخش دنبال‌کنندگان -->
+            <!-- دنبال‌کنندگان -->
             <div x-show="openSection === 'followers'" x-cloak x-transition>
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <h3 class="text-xl font-bold text-gray-800 mb-4">دنبال‌کنندگان</h3>
@@ -76,7 +74,7 @@
                 </div>
             </div>
 
-            <!-- بخش دنبال‌شوندگان -->
+            <!-- دنبال‌شوندگان -->
             <div x-show="openSection === 'followings'" x-cloak x-transition>
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <h3 class="text-xl font-bold text-gray-800 mb-4">دنبال‌شوندگان</h3>
@@ -85,7 +83,7 @@
             </div>
         </div>
 
-        <!-- مودال نمایش عکس بزرگ -->
+        <!--  بزرگنمایی عکس -->
         <div x-show="modalOpen" x-cloak
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0"

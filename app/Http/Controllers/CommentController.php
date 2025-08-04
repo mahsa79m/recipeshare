@@ -8,13 +8,11 @@ use Illuminate\Support\Facades\Auth;
 
 /**
  * مدیریت نظرات
- *
- * کنترلر برای ذخیره نظرات و پاسخ‌های کاربران برای دستورهای غذا.
  */
 class CommentController extends Controller
 {
     /**
-     * ذخیره یک نظر جدید یا پاسخ.
+     * ذخیره یک نظر جدید یا پاسخ
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Recipe  $recipe
@@ -33,10 +31,9 @@ class CommentController extends Controller
             'body' => $request->body,
             'parent_id' => $request->parent_id,
         ]);
-
-         // بررسی نوع درخواست (AJAX یا معمولی)
+         // بررسی نوع درخواست
         if ($request->ajax()) {
-            // بارگذاری مجدد روابط برای نمایش نظرات به روز شده
+
             $recipe->load(['comments.user', 'comments.replies.user']);
 
             $commentsHtml = view('recipes.partials._comments_section', ['recipe' => $recipe])->render();

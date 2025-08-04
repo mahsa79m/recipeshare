@@ -7,12 +7,10 @@
     <title>پنل کاربری - {{ config('app.name', 'Laravel') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    {{-- فونت وزیرمتن برای فارسی و فونت Inter برای انگلیسی --}}
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        /* اعمال فونت‌های وزیرمتن و Inter به کل صفحه */
         body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
             font-family: 'Vazirmatn', 'Inter', sans-serif;
         }

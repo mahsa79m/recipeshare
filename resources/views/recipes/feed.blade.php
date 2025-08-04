@@ -29,12 +29,11 @@
          }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-            {{-- گرید نمایش نتایج --}}
+            {{--  نتایج --}}
             <div id="recipes-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 @include('recipes.partials._recipe_cards', ['recipes' => $recipes])
             </div>
 
-            {{-- پیام "نتیجه‌ای یافت نشد" --}}
             @if($recipes->isEmpty())
                 <div class="col-span-full text-center py-12 bg-white rounded-lg shadow-md">
                     <p class="text-lg text-gray-500">
@@ -44,7 +43,6 @@
                 </div>
             @endif
 
-            {{-- نشانگر بارگذاری --}}
             <div x-show="loading" class="text-center py-8 col-span-full">
                 <p class="text-gray-500">در حال بارگذاری دستورهای بیشتر...</p>
             </div>

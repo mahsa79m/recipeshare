@@ -31,7 +31,6 @@
                 @endforelse
             </div>
 
-            {{-- لینک‌های صفحه‌بندی --}}
             <div class="mt-8">
                 {{ $recipes->links() }}
             </div>

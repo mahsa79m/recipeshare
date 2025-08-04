@@ -3,7 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany; // <-- اضافه شد
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Report;
 use App\Scopes\ActiveUserRecipeScope;
@@ -23,7 +23,7 @@ class Recipe extends Model
      */
      protected $casts = [
             'is_active' => 'boolean',
-           // 'ingredients' => 'array', // اگر ingredients را به صورت JSON ذخیره می‌کنید
+           // 'ingredients' => 'array', // اگر ingredients را به صورت جیسون ذخیره می‌کنید
         ];
 
      protected static function booted()

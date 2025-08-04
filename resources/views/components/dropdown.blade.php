@@ -29,7 +29,7 @@ $width = match ($width) {
             class="absolute z-50 mt-2 {{ $width }} rounded-md shadow-lg {{ $alignmentClasses }}"
             style="display: none;"
             @click="open = false"
-            x-cloak {{-- این دستور اضافه شد تا از پرش تصویر جلوگیری کند --}}>
+            x-cloak >
         <div class="rounded-md ring-1 ring-black ring-opacity-5 {{ $contentClasses }}">
             {{ $content }}
         </div>

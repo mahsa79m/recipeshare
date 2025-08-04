@@ -21,12 +21,10 @@ class RecipePolicy
      */
     public function view(?User $user, Recipe $recipe): Response
     {
-        // اگر دستور غذا فعال باشد، همه (حتی مهمانان) می‌توانند ببینند
         if ($recipe->is_active) {
             return Response::allow();
         }
 
-        // اگر دستور فعال نیست، فقط صاحب دستور یا ادمین می‌تواند ببیند
         if ($user && ($user->id === $recipe->user_id || $user->is_admin)) {
             return Response::allow();
         }
@@ -39,7 +37,6 @@ class RecipePolicy
      */
     public function create(User $user): bool
     {
-        // هر کاربر لاگین کرده‌ای می‌تواند دستور غذا ایجاد کند
         return $user !== null;
     }
 
@@ -48,7 +45,7 @@ class RecipePolicy
      */
     public function update(User $user, Recipe $recipe): bool
     {
-        // فقط صاحب دستور غذا یا ادمین می‌تواند آن را ویرایش کند
+        // ویرایش فقط صاحب دستور غذا یا ادمین
        return $user->id === $recipe->user_id || $user->is_admin;
     }
 
@@ -57,7 +54,7 @@ class RecipePolicy
      */
     public function delete(User $user, Recipe $recipe): bool
     {
-        // فقط صاحب دستور غذا یا ادمین می‌تواند آن را حذف کند
+        // حذف فقط صاحب دستور غذا یا ادمین
        return $user->id === $recipe->user_id || $user->is_admin;
     }
 
@@ -66,7 +63,7 @@ class RecipePolicy
      */
     public function restore(User $user, Recipe $recipe): bool
     {
-        // فقط ادمین می‌تواند بازیابی کند
+        // بازیابی فقط ادمین
         return $user->is_admin;
     }
 
@@ -75,7 +72,7 @@ class RecipePolicy
      */
     public function forceDelete(User $user, Recipe $recipe): bool
     {
-        // فقط ادمین می‌تواند برای همیشه حذف کند
+        // حذف برای همیشه فقط ادمین
         return $user->is_admin;
     }
 }

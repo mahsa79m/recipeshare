@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Storage;
 
 /**
  * مدیریت دستورهای غذا
- *
- * کنترلر برای مشاهده، تایید، رد و حذف دستورهای غذای کاربران.
  */
 class RecipeManagementController extends Controller
 {
@@ -22,12 +20,12 @@ class RecipeManagementController extends Controller
      */
     public function index(Request $request)
     {
-        // شمارش دستورهای غذای در انتظار تایید
+        // دستورهای غذای در انتظار تایید
          $pendingRecipesCount = Recipe::where('is_active', false)->count();
 
         $query = Recipe::with('user', 'category')->latest();
 
-        // فیلترینگ بر اساس وضعیت
+
         if ($request->query('status') === 'pending') {
             $query->where('is_active', false);
         } elseif ($request->query('status') === 'published') {
@@ -42,24 +40,14 @@ class RecipeManagementController extends Controller
         ]);
     }
 
-    /**
-     * تایید و انتشار یک دستور غذا
-     *
-     * @param  \App\Models\Recipe  $recipe
-     * @return \Illuminate\Http\RedirectResponse
-     */
+    ///////////////////////////////////
+    /////حذفش کنم چون تغییر حالت دادم
+    // تایید و انتشار یک دستور غذا
     public function approve(Recipe $recipe)
     {
         $recipe->update(['is_active' => true]);
-        return back()->with('success', 'دستور غذا با موفقیت تایید و منتشر شد.');
+        return back()->with('success', 'دستور غذا با موفقیت منتشر شد.');
     }
-
-    /**
-     * رد و حذف یک دستور غذا
-     *
-     * @param  \App\Models\Recipe  $recipe
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function reject(Recipe $recipe)
     {
         // حذف عکس مرتبط از Storage و سپس حذف رکورد
@@ -69,6 +57,9 @@ class RecipeManagementController extends Controller
         $recipe->delete();
         return back()->with('success', 'دستور غذا با موفقیت رد و حذف شد.');
     }
+
+    //////////////////////////////
+
 
 /**
      * حذف دائمی یک دستور غذا

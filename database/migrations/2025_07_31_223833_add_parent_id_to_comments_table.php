@@ -22,7 +22,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('comments', function (Blueprint $table) {
-            // Drop foreign key constraint first
             $table->dropForeign(['parent_id']);
             $table->dropColumn('parent_id');
         });

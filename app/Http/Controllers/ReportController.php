@@ -24,7 +24,6 @@ class ReportController extends Controller
             ->exists();
 
         if ($existingReport) {
-            // اگر درخواست AJAX باشد، پاسخ خطای JSON برگردان
             if ($request->ajax()) {
                 return response()->json(['message' => 'شما قبلاً این دستور غذا را گزارش کرده‌اید.'], 422);
             }
@@ -37,7 +36,6 @@ class ReportController extends Controller
             'details' => $request->details,
         ]);
 
-        // اگر درخواست AJAX باشد، پاسخ موفقیت‌آمیز JSON برگردان
         if ($request->ajax()) {
             return response()->json(['message' => 'گزارش شما با موفقیت ثبت شد. از همکاری شما متشکریم.']);
         }

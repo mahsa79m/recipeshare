@@ -11,15 +11,12 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 /**
- * کنترلر پروفایل کاربر
- *
- * اینجا کارهای مربوط به نمایش، به‌روزرسانی و حذف پروفایل کاربر رو انجام می‌دیم.
+ *  پروفایل کاربر
+ *  نمایش، به‌روزرسانی و حذف پروفایل
  */
 class ProfileController extends Controller
 {
     /**
-     * نمایش فرم ویرایش پروفایل.
-     *
      * @return \Illuminate\View\View
      */
     public function edit(Request $request): View
@@ -31,7 +28,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * به‌روزرسانی اطلاعات پروفایل کاربر
+     * به‌روزرسانی
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
@@ -42,7 +39,7 @@ class ProfileController extends Controller
             $user->email_verified_at = null;
         }
 
-        // آپلود عکس پروفایل
+
         if ($request->hasFile('profile_image')) {
             if ($user->profile_image_path) {
                 Storage::disk('public')->delete($user->profile_image_path);
@@ -56,7 +53,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * حذف حساب کاربری
+     * حذف
      */
     public function destroy(Request $request): RedirectResponse
     {

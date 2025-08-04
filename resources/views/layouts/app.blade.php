@@ -16,20 +16,9 @@
 
 
     <style>
-        body,
-        button,
-        input,
-        select,
-        textarea,
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
+         body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
             font-family: 'Vazirmatn', sans-serif;
         }
-
         [x-cloak] {
             display: none !important;
         }
@@ -59,7 +48,7 @@
     <div x-cloak class="fixed bottom-0 left-0 w-full bg-white border-t sm:hidden z-40 shadow-lg" dir="rtl">
         <div class="flex justify-around items-center h-16">
 
-            {{-- لینک خانه --}}
+            {{-- خانه --}}
             <a href="{{ route('home') }}"
                 class="flex flex-col items-center text-gray-600 hover:text-amber-600 transition {{ request()->routeIs('home') ? 'text-amber-600' : '' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -70,7 +59,7 @@
                 <span class="text-xs mt-1">خانه</span>
             </a>
 
-            {{-- لینک تمام دستورها --}}
+            {{-- تمام دستورها --}}
             <a href="{{ route('recipes.index') }}"
                 class="flex flex-col items-center text-gray-600 hover:text-amber-600 transition {{ request()->routeIs('recipes.index') ? 'text-amber-600' : '' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -81,7 +70,7 @@
             </a>
 
             @auth
-                {{-- لینک افزودن دستور --}}
+                {{-- افزودن دستور --}}
                 <a href="{{ route('recipes.create') }}"
                     class="flex flex-col items-center text-gray-600 hover:text-amber-600 transition {{ request()->routeIs('recipes.create') ? 'text-amber-600' : '' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -92,7 +81,7 @@
                     <span class="text-xs mt-1">افزودن</span>
                 </a>
 
-                {{-- لینک پروفایل (اصلاح شده) --}}
+
                 <a href="{{ route('users.show', Auth::user()) }}"
                     class="flex flex-col items-center text-gray-600 hover:text-amber-600 transition {{ request()->routeIs('users.show', Auth::user()) ? 'text-amber-600' : '' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -103,7 +92,7 @@
                     <span class="text-xs mt-1">پروفایل</span>
                 </a>
             @else
-                {{-- لینک ورود --}}
+
                 <a href="{{ route('login') }}"
                     class="flex flex-col items-center text-gray-600 hover:text-amber-600 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -119,7 +108,6 @@
 
     @stack('scripts')
 
-    <!-- بارگذاری جاوااسکریپت در انتهای Body برای عملکرد صحیح -->
     @vite(['resources/js/app.js'])
 </body>
 

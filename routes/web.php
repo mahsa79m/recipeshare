@@ -43,12 +43,12 @@ Route::get('/faq', [StaticPageController::class, 'faq'])->name('pages.faq');
 |--------------------------------------------------------------------------
 */
 Route::controller(RecipeController::class)->group(function () {
-    // مسیرهای عمومی (بدون نیاز به لاگین)
+    // مسیرهای عمومی
     Route::get('/recipes', 'index')->name('recipes.index');
 
     // مسیرهای نیازمند احراز هویت (لاگین)
     Route::middleware('auth')->group(function () {
-        Route::get('/recipes/create', 'create')->name('recipes.create'); // فرم ساخت
+        Route::get('/recipes/create', 'create')->name('recipes.create'); //  ساخت
         Route::post('/recipes', 'store')->name('recipes.store');           // ذخیره
         Route::get('/feed', 'feed')->name('recipes.feed');                 // فید کاربر
         Route::get('/recipes/{recipe}/edit', 'edit')->name('recipes.edit'); // فرم ویرایش
@@ -56,14 +56,13 @@ Route::controller(RecipeController::class)->group(function () {
         Route::delete('/recipes/{recipe}', 'destroy')->name('recipes.destroy'); // حذف
     });
 
-    // این مسیر باید بعد از تمام مسیرهای بالا که با /recipes/ شروع می‌شوند، قرار گیرد
     Route::get('/recipes/{recipe}', 'show')->name('recipes.show'); // نمایش یک دستور غذا
 });
 
 
 /*
 |--------------------------------------------------------------------------
-| سایر مسیرهای نیازمند احراز هویت
+|  مسیرهایی که نیازمند احراز هویت
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
@@ -83,7 +82,7 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| پنل مدیریت (فقط ادمین)
+| پنل مدیریت
 |--------------------------------------------------------------------------
 */
 Route::prefix('admin')->name('admin.')->middleware(['auth', AdminMiddleware::class])->group(function () {

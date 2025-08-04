@@ -10,7 +10,7 @@ return new class extends Migration
     public function up(): void
     {
     Schema::table('follows', function (Blueprint $table) {
-        // این قانون به دیتابیس می‌گوید که هر ترکیب از این دو ستون باید منحصر به فرد باشد
+        //منحصر بودن برا همون ارورم
         $table->unique(['follower_id', 'following_id']);
     });
     }
